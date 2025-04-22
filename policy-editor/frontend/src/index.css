@@ -1,0 +1,60 @@
+@import "tailwindcss";
+/* @import "highlight.js/styles/github.css"; */ /* Commented out for now */
+@import "github-markdown-css/github-markdown-light.css"; /* Import GitHub Markdown CSS (light theme) */
+
+/* Remove previously added custom .markdown styles */
+
+/* Style MarkdownViewer within chat bubbles */
+.chat-bubble-user .markdown-body,
+.chat-bubble-bot .markdown-body {
+  background-color: transparent !important; /* Ensure bubble background shows */
+  color: inherit !important; /* Inherit text color from bubble */
+  padding: 0 !important; /* Remove default padding if any */
+  font-size: inherit !important; /* Inherit font size */
+}
+
+/* Ensure common markdown elements inherit colors and have transparent backgrounds */
+.chat-bubble-user .markdown-body p,
+.chat-bubble-user .markdown-body ul,
+.chat-bubble-user .markdown-body ol,
+.chat-bubble-user .markdown-body li,
+.chat-bubble-user .markdown-body pre,
+.chat-bubble-user .markdown-body code,
+.chat-bubble-user .markdown-body blockquote,
+.chat-bubble-user .markdown-body h1,
+.chat-bubble-user .markdown-body h2,
+.chat-bubble-user .markdown-body h3,
+.chat-bubble-user .markdown-body h4,
+.chat-bubble-user .markdown-body h5,
+.chat-bubble-user .markdown-body h6,
+.chat-bubble-bot .markdown-body p,
+.chat-bubble-bot .markdown-body ul,
+.chat-bubble-bot .markdown-body ol,
+.chat-bubble-bot .markdown-body li,
+.chat-bubble-bot .markdown-body pre,
+.chat-bubble-bot .markdown-body code,
+.chat-bubble-bot .markdown-body blockquote,
+.chat-bubble-bot .markdown-body h1,
+.chat-bubble-bot .markdown-body h2,
+.chat-bubble-bot .markdown-body h3,
+.chat-bubble-bot .markdown-body h4,
+.chat-bubble-bot .markdown-body h5,
+.chat-bubble-bot .markdown-body h6 {
+  background-color: transparent !important;
+  color: inherit !important;
+}
+
+/* Specific overrides for code blocks if needed */
+.chat-bubble-user .markdown-body pre,
+.chat-bubble-user .markdown-body code {
+  /* User bubble is dark, maybe slightly lighter background for code? */
+  /* background-color: rgba(255, 255, 255, 0.1) !important; */
+  color: inherit !important; /* Ensure text color is white */
+}
+
+.chat-bubble-bot .markdown-body pre,
+.chat-bubble-bot .markdown-body code {
+  /* Bot bubble is light, maybe slightly darker background for code? */
+  /* background-color: rgba(0, 0, 0, 0.05) !important; */
+   color: inherit !important; /* Ensure text color is dark */
+}

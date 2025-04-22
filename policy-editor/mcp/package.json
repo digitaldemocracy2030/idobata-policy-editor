@@ -1,0 +1,33 @@
+{
+  "name": "@idobata/policy-editor-mcp",
+  "version": "1.0.0",
+  "type": "module",
+  "exports": "./dist/main.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "dev": "nodemon --watch src --exec \"node --loader ts-node/esm src/main.ts\" | pino-pretty"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^22.14.1",
+    "nodemon": "^3.1.9",
+    "pino-pretty": "^13.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.9.0",
+    "@octokit/app": "^15.1.6",
+    "@octokit/rest": "^21.1.1",
+    "dotenv": "^16.5.0",
+    "pino": "^9.6.0",
+    "zod": "^3.24.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

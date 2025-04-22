@@ -1,1 +1,40 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+.pnpm-debug.log
+
+# Env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build directories
+dist/
+build/
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.sublime-*
+*.swp
+
+# OS files
 .DS_Store
+Thumbs.db
+
+# Log files
+logs/
+*.log
+
+# MongoDB local data
+data/
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+.temp/

@@ -1,0 +1,232 @@
+/* Custom animations */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Custom scrollbar styles */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Clean card effect */
+.clean-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Subtle accent text */
+.accent-text {
+  position: relative;
+  color: rgb(var(--color-primary));
+  font-weight: 600;
+}
+
+.accent-text::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: rgba(var(--color-primary), 0.3);
+}
+
+/* Minimal pattern background */
+.minimal-pattern {
+  background-color: rgb(var(--color-neutral-50));
+  background-image: linear-gradient(rgba(var(--color-neutral-200), 0.3) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(var(--color-neutral-200), 0.3) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Subtle shadow for cards */
+.subtle-shadow {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+/* Minimal border */
+.minimal-border {
+  position: relative;
+}
+
+.minimal-border::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: rgba(var(--color-neutral-200), 1);
+}
+
+/* Dot pattern */
+.dot-pattern {
+  background-image: radial-gradient(rgba(var(--color-neutral-300), 0.2) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Prose styling for rich text content */
+.prose {
+  max-width: 65ch;
+  color: rgb(var(--color-neutral-800));
+}
+
+.prose p {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
+
+.prose strong {
+  color: rgb(var(--color-neutral-900));
+  font-weight: 600;
+}
+
+.prose a {
+  color: rgb(var(--color-primary));
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  color: rgb(var(--color-neutral-900));
+  font-weight: 600;
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+
+.prose h1 {
+  font-size: 2.25em;
+  line-height: 1.1111111;
+}
+
+.prose h2 {
+  font-size: 1.5em;
+  line-height: 1.3333333;
+}
+
+.prose h3 {
+  font-size: 1.25em;
+  line-height: 1.6;
+}
+
+.prose h4 {
+  font-size: 1em;
+  line-height: 1.5;
+}
+
+.prose ul, .prose ol {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+  padding-left: 1.625em;
+}
+
+.prose ul {
+  list-style-type: disc;
+}
+
+.prose ol {
+  list-style-type: decimal;
+}
+
+.prose li {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.prose blockquote {
+  font-weight: 500;
+  font-style: italic;
+  color: rgb(var(--color-neutral-900));
+  border-left-width: 0.25rem;
+  border-left-color: rgb(var(--color-neutral-200));
+  quotes: "\201C""\201D""\2018""\2019";
+  margin-top: 1.6em;
+  margin-bottom: 1.6em;
+  padding-left: 1em;
+}
+
+.prose blockquote p:first-of-type::before {
+  content: open-quote;
+}
+
+.prose blockquote p:last-of-type::after {
+  content: close-quote;
+}
+
+.prose code {
+  color: rgb(var(--color-neutral-900));
+  font-weight: 600;
+  font-size: 0.875em;
+}
+
+.prose code::before,
+.prose code::after {
+  content: "`";
+}
+
+.prose pre {
+  color: rgb(var(--color-neutral-200));
+  background-color: rgb(var(--color-neutral-800));
+  overflow-x: auto;
+  font-weight: 400;
+  font-size: 0.875em;
+  line-height: 1.7142857;
+  margin-top: 1.7142857em;
+  margin-bottom: 1.7142857em;
+  border-radius: 0.375rem;
+  padding: 0.8571429em 1.1428571em;
+}
+
+.prose pre code {
+  background-color: transparent;
+  border-width: 0;
+  border-radius: 0;
+  padding: 0;
+  font-weight: 400;
+  color: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
+}
+
+.prose pre code::before,
+.prose pre code::after {
+  content: "";
+}
+
+.prose-sm {
+  font-size: 0.875rem;
+}
+
+.prose-sm p {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}

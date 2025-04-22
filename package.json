@@ -1,0 +1,19 @@
+{
+  "name": "idobata",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "policy-editor/backend",
+    "policy-editor/frontend",
+    "policy-editor/mcp",
+    "discussion/backend",
+    "discussion/frontend"
+  ],
+  "scripts": {
+    "policy-editor:backend:dev": "cd policy-editor/backend && npm run dev",
+    "policy-editor:frontend:dev": "cd policy-editor/frontend && npm run dev",
+    "policy-editor:mcp:dev": "cd policy-editor/mcp && npm run dev",
+    "discussion:backend:dev": "cd discussion/backend && npm run dev",
+    "discussion:frontend:dev": "cd discussion/frontend && npm run dev"
+  }
+}
