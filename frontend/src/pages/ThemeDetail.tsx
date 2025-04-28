@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   FloatingChat,
@@ -7,19 +7,140 @@ import {
 import BreadcrumbView from "../components/common/BreadcrumbView";
 import CommentCard from "../components/theme/CommentCard";
 import KeyQuestionCard from "../components/theme/KeyQuestionCard";
+import ThreadExtractions from "../components/ThreadExtractions";
+import { apiClient } from "../services/api/apiClient";
+import { v4 as uuidv4 } from "uuid";
+import type { NotificationType, PreviousExtractions } from "../types";
 
 const ThemeDetail = () => {
   const { themeId } = useParams<{ themeId: string }>();
   const [activeTab, setActiveTab] = useState<"issues" | "solutions">("issues");
   const chatRef = useRef<FloatingChatRef>(null);
+  const [currentThreadId, setCurrentThreadId] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [showExtractions, setShowExtractions] = useState<boolean>(true);
+  const [notifications, setNotifications] = useState<NotificationType[]>([]);
+  const [previousExtractions, setPreviousExtractions] = useState<PreviousExtractions>({
+    problems: [],
+    solutions: [],
+  });
 
-  const handleSendMessage = (message: string) => {
+  useEffect(() => {
+    const storedUserId = localStorage.getItem("userId");
+    if (storedUserId) {
+      setUserId(storedUserId);
+    } else {
+      const newUserId = uuidv4();
+      localStorage.setItem("userId", newUserId);
+      setUserId(newUserId);
+    }
+  }, []);
+
+  useEffect(() => {
+    const newThreadId = uuidv4();
+    setCurrentThreadId(newThreadId);
+  }, []);
+
+  const handleSendMessage = async (message: string) => {
+    if (!userId || !themeId || !currentThreadId) {
+      console.error("Missing required data for sending message");
+      return;
+    }
+
     console.log("Message sent:", message);
 
-    setTimeout(() => {
-      chatRef.current?.addMessage("メッセージを受け取りました。", "system");
-    }, 500);
+    try {
+      const result = await apiClient.sendMessage(
+        userId,
+        message,
+        themeId,
+        currentThreadId
+      );
+
+      if (result.isErr()) {
+        console.error("Failed to send message:", result.error);
+        chatRef.current?.addMessage(
+          "メッセージの送信に失敗しました。もう一度お試しください。",
+          "system"
+        );
+        return;
+      }
+
+      const { response } = result.value;
+      chatRef.current?.addMessage(response, "system");
+
+      checkForNewExtractions();
+    } catch (error) {
+      console.error("Error sending message:", error);
+      chatRef.current?.addMessage(
+        "エラーが発生しました。もう一度お試しください。",
+        "system"
+      );
+    }
   };
+
+  const checkForNewExtractions = async () => {
+    if (!currentThreadId || !themeId) {
+      console.warn("Missing threadId or themeId for extraction check");
+      return;
+    }
+
+    try {
+      const result = await apiClient.getThreadExtractions(
+        currentThreadId,
+        themeId
+      );
+
+      if (result.isErr()) {
+        console.error("Failed to fetch extractions:", result.error);
+        return;
+      }
+
+      const { problems, solutions } = result.value;
+      const newProblems = problems.filter(
+        (p) => !previousExtractions.problems.some((prev) => prev._id === p._id)
+      );
+      const newSolutions = solutions.filter(
+        (s) => !previousExtractions.solutions.some((prev) => prev._id === s._id)
+      );
+
+      if (newProblems.length > 0 || newSolutions.length > 0) {
+        const newNotification = {
+          message: `新しいインサイトが抽出されました: ${newProblems.length}件の課題と${newSolutions.length}件の解決策`,
+          type: "info",
+          id: uuidv4(),
+        };
+        setNotifications((prev) => [...prev, newNotification]);
+
+        setPreviousExtractions({
+          problems,
+          solutions,
+        });
+      }
+    } catch (error) {
+      console.error("Error checking for new extractions:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (notifications.length > 0) {
+      const timer = setTimeout(() => {
+        setNotifications((prev) => prev.slice(1));
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [notifications]);
+
+  useEffect(() => {
+    if (!currentThreadId || !themeId) return;
+
+    checkForNewExtractions();
+
+    const intervalId = setInterval(checkForNewExtractions, 5000); // 5秒ごとにチェック
+
+    return () => clearInterval(intervalId);
+  }, [currentThreadId, themeId]);
 
   const themeData = {
     id: themeId,
@@ -149,7 +270,87 @@ const ThemeDetail = () => {
         </div>
       </div>
 
-      <FloatingChat ref={chatRef} onSendMessage={handleSendMessage} />
+      {/* 通知表示エリア */}
+      {notifications.length > 0 && (
+        <div className="fixed top-4 right-4 z-50 space-y-2">
+          {notifications.map((notification) => (
+            <div
+              key={notification.id}
+              className={`p-3 rounded-lg shadow-md text-sm ${
+                notification.type === "info"
+                  ? "bg-blue-100 text-blue-800"
+                  : "bg-red-100 text-red-800"
+              }`}
+            >
+              {notification.message}
+              <button
+                type="button"
+                className="ml-2 text-xs"
+                onClick={() => {
+                  setNotifications((prev) =>
+                    prev.filter((n) => n.id !== notification.id)
+                  );
+                }}
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* 抽出結果表示エリア */}
+      <div className="mb-8">
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="text-xl font-semibold">AIによる自動抽出</h2>
+          <button
+            type="button"
+            className="text-sm text-purple-600 hover:text-purple-800"
+            onClick={() => setShowExtractions(!showExtractions)}
+          >
+            {showExtractions ? "非表示" : "表示"}
+          </button>
+        </div>
+        
+        {showExtractions && currentThreadId && themeId && (
+          <div className="bg-neutral-50 p-4 rounded-lg border border-neutral-200">
+            <ThreadExtractions threadId={currentThreadId} themeId={themeId} />
+          </div>
+        )}
+      </div>
+
+      {/* フローティングチャットと抽出結果表示エリア */}
+      <div className="relative">
+        {/* 抽出結果表示切り替えボタン */}
+        <div className="fixed bottom-20 right-4 z-40">
+          <button
+            onClick={() => setShowExtractions(!showExtractions)}
+            disabled={!currentThreadId}
+            className={`px-2 py-1 rounded-md text-xs border border-neutral-300 transition-colors duration-200 ${
+              !currentThreadId
+                ? "bg-neutral-100 text-neutral-300 cursor-not-allowed"
+                : showExtractions
+                  ? "bg-neutral-200 text-neutral-700 hover:bg-neutral-300"
+                  : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
+            }`}
+            type="button"
+          >
+            抽出された課題/解決策を{showExtractions ? "非表示" : "表示"}
+          </button>
+        </div>
+
+        {/* 抽出結果表示エリア */}
+        {showExtractions && currentThreadId && themeId && (
+          <div className="fixed bottom-20 right-4 w-80 bg-white border border-neutral-200 rounded-lg shadow-lg z-30">
+            <div className="p-3 max-h-60 overflow-y-auto custom-scrollbar">
+              <ThreadExtractions threadId={currentThreadId} themeId={themeId} />
+            </div>
+          </div>
+        )}
+
+        {/* フローティングチャット */}
+        <FloatingChat ref={chatRef} onSendMessage={handleSendMessage} />
+      </div>
     </div>
   );
 };
