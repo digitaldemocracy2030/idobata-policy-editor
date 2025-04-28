@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+import ThreadExtractions from "../components/ThreadExtractions";
 import {
   FloatingChat,
   type FloatingChatRef,
@@ -7,9 +9,7 @@ import {
 import BreadcrumbView from "../components/common/BreadcrumbView";
 import CommentCard from "../components/theme/CommentCard";
 import KeyQuestionCard from "../components/theme/KeyQuestionCard";
-import ThreadExtractions from "../components/ThreadExtractions";
 import { apiClient } from "../services/api/apiClient";
-import { v4 as uuidv4 } from "uuid";
 import type { NotificationType, PreviousExtractions } from "../types";
 
 const ThemeDetail = () => {
@@ -20,10 +20,11 @@ const ThemeDetail = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [showExtractions, setShowExtractions] = useState<boolean>(true);
   const [notifications, setNotifications] = useState<NotificationType[]>([]);
-  const [previousExtractions, setPreviousExtractions] = useState<PreviousExtractions>({
-    problems: [],
-    solutions: [],
-  });
+  const [previousExtractions, setPreviousExtractions] =
+    useState<PreviousExtractions>({
+      problems: [],
+      solutions: [],
+    });
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
@@ -311,7 +312,7 @@ const ThemeDetail = () => {
             {showExtractions ? "非表示" : "表示"}
           </button>
         </div>
-        
+
         {showExtractions && currentThreadId && themeId && (
           <div className="bg-neutral-50 p-4 rounded-lg border border-neutral-200">
             <ThreadExtractions threadId={currentThreadId} themeId={themeId} />
