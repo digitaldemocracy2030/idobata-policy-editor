@@ -6,6 +6,7 @@
 
 1. 旧UI（`MainPage.tsx`）では、`VisualizationArea` コンポーネントを通じて表示される画面と、`AppLayout` コンポーネントが提供するチャット機能が連携しています。
 2. 新UI（`ThemeDetail.tsx`）には既に基本的なチャット機能（`FloatingChat`）が実装されていますが、意見表明と論点抽出の連携機能が欠けています。
+3. **重要**: この実装では、既存の `FloatingChat` コンポーネントを使用して、チャット機能と論点抽出機能を連携させます。新しいチャットコンポーネントは作成せず、既存のものを活用します。
 
 ## 実装手順
 
@@ -288,7 +289,7 @@ import Notification from "../components/Notification";
 
 ### 9. レイアウトの調整
 
-FloatingChat コンポーネントを含むレイアウトを調整して、抽出結果の表示領域を確保します：
+既存の FloatingChat コンポーネントを含むレイアウトを調整して、抽出結果の表示領域を確保します。既存のコンポーネントを再利用することで、UIの一貫性を保ちます：
 
 ```tsx
 <div className="relative">
