@@ -22,6 +22,7 @@ const ThemeDetail = () => {
   const chatRef = useRef<FloatingChatRef>(null);
   const [currentThreadId, setCurrentThreadId] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const [messageHasBeenSent, setMessageHasBeenSent] = useState<boolean>(false);
   const [showExtractions, setShowExtractions] = useState<boolean>(true);
   const [notifications, setNotifications] = useState<NotificationType[]>([]);
   const [previousExtractions, setPreviousExtractions] =
@@ -100,6 +101,7 @@ const ThemeDetail = () => {
 
       const { response } = result.value;
       chatRef.current?.addMessage(response, "system");
+      setMessageHasBeenSent(true); // メッセージが正常に送信された後にフラグを設定
 
       checkForNewExtractions();
     } catch (error) {
@@ -114,6 +116,10 @@ const ThemeDetail = () => {
   const checkForNewExtractions = async () => {
     if (!currentThreadId || !themeId) {
       console.warn("Missing threadId or themeId for extraction check");
+      return;
+    }
+
+    if (!messageHasBeenSent) {
       return;
     }
 
@@ -165,14 +171,14 @@ const ThemeDetail = () => {
   }, [notifications]);
 
   useEffect(() => {
-    if (!currentThreadId || !themeId) return;
+    if (!currentThreadId || !themeId || !messageHasBeenSent) return;
 
     checkForNewExtractions();
 
     const intervalId = setInterval(checkForNewExtractions, 5000); // 5秒ごとにチェック
 
     return () => clearInterval(intervalId);
-  }, [currentThreadId, themeId]);
+  }, [currentThreadId, themeId, messageHasBeenSent]);
 
   if (isLoading) {
     return (
