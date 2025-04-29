@@ -85,6 +85,13 @@ export interface Theme {
   _id: string;
   title: string;
   slug: string;
+  description?: string;
+}
+
+export interface ThemeWithCounts extends Theme {
+  keyQuestionCount: number;
+  commentCount: number;
+  description: string; // descriptionが必須
 }
 
 export type MessageType = "user" | "system" | "system-message";

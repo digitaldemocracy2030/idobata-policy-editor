@@ -5,6 +5,7 @@ import {
 } from "../components/chat/FloatingChat";
 import BreadcrumbView from "../components/common/BreadcrumbView";
 import ThemeCard from "../components/home/ThemeCard";
+import { useThemes } from "../hooks/useThemes";
 
 const Themes = () => {
   const breadcrumbItems = [
@@ -13,6 +14,7 @@ const Themes = () => {
   ];
 
   const chatRef = useRef<FloatingChatRef>(null);
+  const { themes, loading, error } = useThemes();
 
   const handleSendMessage = (message: string) => {
     console.log("Message sent:", message);
@@ -21,49 +23,6 @@ const Themes = () => {
       chatRef.current?.addMessage("メッセージを受け取りました。", "system");
     }, 500);
   };
-
-  const themesData = [
-    {
-      id: 1,
-      title: "どうすれば若者が安心してキャリアを築ける社会を実現できるか？",
-      description:
-        "若者の雇用不安や将来への不安を解消し、安心してキャリアを築ける社会の実現について議論します。",
-      keyQuestionCount: 12,
-      commentCount: 45,
-    },
-    {
-      id: 2,
-      title: "子育て世代が直面する課題とその解決策",
-      description:
-        "子育て世代が抱える経済的・時間的負担や、保育・教育の問題について考えます。",
-      keyQuestionCount: 8,
-      commentCount: 32,
-    },
-    {
-      id: 3,
-      title: "高齢化社会における地域コミュニティの在り方",
-      description:
-        "高齢化が進む地域での支え合いや、コミュニティ再生のアイデアを集めます。",
-      keyQuestionCount: 10,
-      commentCount: 28,
-    },
-    {
-      id: 4,
-      title: "デジタル社会における個人情報保護と利便性のバランス",
-      description:
-        "デジタル化が進む中で、個人情報の保護と利便性をどうバランスさせるかを考えます。",
-      keyQuestionCount: 6,
-      commentCount: 19,
-    },
-    {
-      id: 5,
-      title: "持続可能なエネルギー政策の実現に向けて",
-      description:
-        "環境に配慮しつつ、安定したエネルギー供給を実現するための政策について議論します。",
-      keyQuestionCount: 9,
-      commentCount: 27,
-    },
-  ];
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -76,17 +35,38 @@ const Themes = () => {
         関心のあるテーマに参加して、あなたの声を政策づくりに活かしましょう。
       </p>
 
-      <div className="grid grid-cols-1 gap-4 mb-12">
-        {themesData.map((theme) => (
-          <ThemeCard
-            key={theme.id}
-            title={theme.title}
-            description={theme.description}
-            keyQuestionCount={theme.keyQuestionCount}
-            commentCount={theme.commentCount}
-          />
-        ))}
-      </div>
+      {loading && (
+        <div className="text-center py-8">
+          <p>テーマを読み込み中...</p>
+        </div>
+      )}
+
+      {error && (
+        <div className="bg-red-100 text-red-700 p-4 rounded-lg mb-8">
+          <p>エラーが発生しました: {error.message}</p>
+        </div>
+      )}
+
+      {!loading && !error && themes.length === 0 && (
+        <div className="text-center py-8">
+          <p>テーマがありません。</p>
+        </div>
+      )}
+
+      {!loading && !error && themes.length > 0 && (
+        <div className="grid grid-cols-1 gap-4 mb-12">
+          {themes.map((theme) => (
+            <ThemeCard
+              key={theme._id}
+              id={theme._id}
+              title={theme.title}
+              description={theme.description}
+              keyQuestionCount={theme.keyQuestionCount}
+              commentCount={theme.commentCount}
+            />
+          ))}
+        </div>
+      )}
 
       <FloatingChat ref={chatRef} onSendMessage={handleSendMessage} />
     </div>

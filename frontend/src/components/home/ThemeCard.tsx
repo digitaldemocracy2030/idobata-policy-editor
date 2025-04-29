@@ -2,7 +2,7 @@ import { ArrowRight, HelpCircle, MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface ThemeCardProps {
-  id?: number;
+  id?: number | string;
   title: string;
   description?: string;
   keyQuestionCount?: number;
