@@ -1,6 +1,6 @@
-import authService from "../services/auth/authService.js";
-import AdminUser from "../models/AdminUser.js";
 import bcrypt from "bcryptjs";
+import AdminUser from "../models/AdminUser.js";
+import authService from "../services/auth/authService.js";
 
 const initializeAdminUser = async (req, res) => {
   try {
@@ -35,7 +35,7 @@ const initializeAdminUser = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-      maxAge: parseInt(process.env.JWT_EXPIRES_IN || "86400") * 1000, // ミリ秒に変換
+      maxAge: Number.parseInt(process.env.JWT_EXPIRES_IN || "86400") * 1000, // ミリ秒に変換
       path: "/",
     });
 
@@ -73,7 +73,7 @@ const login = async (req, res) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-        maxAge: parseInt(process.env.JWT_EXPIRES_IN || "86400") * 1000, // ミリ秒に変換
+        maxAge: Number.parseInt(process.env.JWT_EXPIRES_IN || "86400") * 1000, // ミリ秒に変換
         path: "/",
       });
 

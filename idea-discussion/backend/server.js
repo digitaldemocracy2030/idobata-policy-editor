@@ -1,7 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import cors from "cors";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import { doubleCsrf } from "csrf-csrf";
 import express from "express";
 import mongoose from "mongoose";
