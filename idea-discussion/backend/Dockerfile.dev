@@ -4,24 +4,14 @@ FROM node:20-alpine
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy package files and install dependencies
-# Copy only package files first to leverage Docker cache
-COPY package.json package-lock.json ./
+# Copy backend package files
+COPY idea-discussion/backend/package.json idea-discussion/backend/package-lock.json* ./
 
-# Copy the specific workspace's package.json
-# Ensure this path matches your actual directory structure relative to the project root
-COPY idea-discussion/backend/package.json ./idea-discussion/backend/
+# Install dependencies directly in the current directory
+RUN npm install
 
-# Install dependencies ONLY for the backend workspace, including devDependencies
-# This command runs from the project root (/app)
-RUN npm install --workspace=idobata-idea-discussion-backend
-
-# Set the working directory to the specific backend workspace
-WORKDIR /app/idea-discussion/backend
-
-# Expose the port the backend will run on (as defined in docker-compose.yml)
+# Expose the port the backend will run on
 EXPOSE 3000
 
-# Default command to run the development server (will likely be overridden in docker-compose)
-# This command runs from the WORKDIR /app/idea-discussion/backend
+# Default command to run the development server
 CMD ["npm", "run", "dev"]

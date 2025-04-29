@@ -12,7 +12,7 @@ containers-stop:
 	docker compose down
 
 idea-discussion-containers-start:
-	docker compose up frontend idea-backend mongo
+	docker compose up frontend idea-backend mongo admin
 
 policy-edit-containers-start:
 	docker compose up policy-frontend policy-backend

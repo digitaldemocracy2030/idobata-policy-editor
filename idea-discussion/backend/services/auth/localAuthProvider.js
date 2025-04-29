@@ -1,12 +1,13 @@
 import AdminUser from "../../models/AdminUser.js";
+import AuthProviderInterface from "./authProviderInterface.js";
 
-class LocalAuthProvider {
+export default class LocalAuthProvider extends AuthProviderInterface {
   async authenticate({ email, password }) {
     if (!email || !password) {
       throw new Error("メールアドレスとパスワードを入力してください");
     }
 
-    const user = await AdminUser.findOne({ email });
+    const user = await AdminUser.findOne({ email }).select("+password");
 
     if (!user) {
       throw new Error("ユーザーが見つかりません");
@@ -21,5 +22,3 @@ class LocalAuthProvider {
     return user;
   }
 }
-
-export default LocalAuthProvider;

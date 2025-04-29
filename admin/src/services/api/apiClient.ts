@@ -2,6 +2,7 @@ import { type Result, err, ok } from "neverthrow";
 import { ApiError, ApiErrorType } from "./apiError";
 import type {
   CreateThemePayload,
+  CreateUserPayload,
   LoginCredentials,
   LoginResponse,
   Theme,
@@ -38,6 +39,7 @@ export class ApiClient {
         (headers as Record<string, string>)["X-CSRF-Token"] = csrfToken;
       }
     }
+
 
     const config = {
       ...options,
@@ -156,6 +158,15 @@ export class ApiClient {
 
   async getCurrentUser(): Promise<ApiResult<UserResponse>> {
     return this.request<UserResponse>("/auth/me");
+  }
+
+  async createUser(
+    userData: CreateUserPayload
+  ): Promise<ApiResult<UserResponse>> {
+    return this.request<UserResponse>("/auth/users", {
+      method: "POST",
+      body: JSON.stringify(userData),
+    });
   }
 }
 

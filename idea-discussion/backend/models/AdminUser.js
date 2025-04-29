@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 
@@ -23,11 +24,16 @@ const adminUserSchema = new mongoose.Schema(
       type: String,
       required: [true, "パスワードは必須です"],
       minlength: [8, "パスワードは8文字以上である必要があります"],
+      select: false,
     },
     role: {
       type: String,
       enum: ["admin", "editor"],
       default: "editor",
+    },
+    googleId: {
+      type: String,
+      default: null,
     },
     lastLogin: {
       type: Date,
@@ -45,8 +51,9 @@ adminUserSchema.pre("save", async function (next) {
   }
 
   try {
+    const pepperPassword = this.password + process.env.PASSWORD_PEPPER;
     const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
+    this.password = await bcrypt.hash(pepperPassword, salt);
     next();
   } catch (error) {
     next(error);
@@ -54,7 +61,8 @@ adminUserSchema.pre("save", async function (next) {
 });
 
 adminUserSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
+  const pepperPassword = enteredPassword + process.env.PASSWORD_PEPPER;
+  return await bcrypt.compare(pepperPassword, this.password);
 };
 
 const AdminUser = mongoose.model("AdminUser", adminUserSchema);

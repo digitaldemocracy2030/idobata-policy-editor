@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import Alert from "../components/ui/Alert";
+import Button from "../components/ui/Button";
+import Input from "../components/ui/Input";
 import { useAuth } from "../contexts/AuthContext";
 
-const Login = () => {
+const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { isAuthenticated, login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   if (isAuthenticated) {
@@ -16,7 +19,18 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
+
+    if (!email) {
+      setError("メールアドレスを入力してください");
+      return;
+    }
+
+    if (!password) {
+      setError("パスワードを入力してください");
+      return;
+    }
+
+    setError("");
     setIsLoading(true);
 
     try {
@@ -24,14 +38,10 @@ const Login = () => {
       if (success) {
         navigate("/");
       } else {
-        setError(
-          "ログインに失敗しました。メールアドレスとパスワードを確認してください。"
-        );
+        setError("メールアドレスまたはパスワードが正しくありません");
       }
     } catch (err) {
-      setError(
-        "ログイン中にエラーが発生しました。後でもう一度お試しください。"
-      );
+      setError("ログイン処理中にエラーが発生しました。");
       console.error("Login error:", err);
     } finally {
       setIsLoading(false);
@@ -48,60 +58,32 @@ const Login = () => {
           </p>
         </div>
 
-        {error && (
-          <div className="p-4 text-sm text-red-700 bg-red-100 rounded-md">
-            {error}
-          </div>
-        )}
+        {error && <Alert type="error">{error}</Alert>}
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              メールアドレス
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
+          <Input
+            label="メールアドレス"
+            name="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            placeholder="admin@example.com"
+          />
 
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              パスワード
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
+          <Input
+            label="パスワード"
+            name="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            placeholder="••••••••"
+          />
 
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-            >
-              {isLoading ? "ログイン中..." : "ログイン"}
-            </button>
-          </div>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? "ログイン中..." : "ログイン"}
+          </Button>
         </form>
       </div>
     </div>
