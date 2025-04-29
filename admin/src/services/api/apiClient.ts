@@ -92,6 +92,7 @@ export class ApiClient {
       );
     }
   }
+
   private async fetchCsrfToken(): Promise<void> {
     try {
       const response = await fetch(`${this.baseUrl}/auth/csrf-token`, {
