@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load environment variables from .env file
-dotenv.config({ path: path.resolve(__dirname, "../.env") });
+dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 
 // Server configuration
 export const PORT = process.env.PORT || 3001;
@@ -21,7 +21,8 @@ export const GITHUB_REPO_OWNER = process.env.GITHUB_REPO_OWNER;
 export const GITHUB_REPO_NAME = process.env.GITHUB_REPO_NAME;
 
 // CORS settings
-export const CORS_ORIGIN = process.env.CORS_ORIGIN || "http://localhost:5173";
+export const CORS_ORIGIN =
+  process.env.POLICY_CORS_ORIGIN || "http://localhost:5174";
 
 // Validate required environment variables
 if (!OPENROUTER_API_KEY) {

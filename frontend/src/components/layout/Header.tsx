@@ -34,10 +34,10 @@ const Header = () => {
                 このサイトについて
               </NavigationRouterLink>
               <NavigationRouterLink
-                to="/mypage"
+                to="/themes"
                 className="text-lg py-2 px-4 hover:bg-purple-50 rounded-md"
               >
-                マイページ
+                テーマ一覧
               </NavigationRouterLink>
             </nav>
           </NavigationSheetContent>

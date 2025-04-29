@@ -35,7 +35,9 @@ const PORT = process.env.PORT || 3000; // Use port from env or default to 3000
 // CORS: Allow requests from the frontend development server
 app.use(
   cors({
-    origin: "http://localhost:5173", // Default Vite frontend dev server port
+    origin: process.env.IDEA_CORS_ORIGIN
+      ? process.env.IDEA_CORS_ORIGIN.split(",")
+      : ["http://localhost:5173", "http://localhost:5175"],
     // Add other origins (e.g., production frontend URL) if needed
   })
 );
@@ -49,6 +51,7 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date() });
 });
 
+import authRoutes from "./routes/authRoutes.js"; // 追加: 認証ルート
 import themeChatRoutes from "./routes/themeChatRoutes.js";
 import themeDigestRoutes from "./routes/themeDigestRoutes.js";
 import themeGenerateQuestionsRoutes from "./routes/themeGenerateQuestionsRoutes.js";
@@ -61,6 +64,8 @@ import themeSolutionRoutes from "./routes/themeSolutionRoutes.js";
 
 // Theme management routes
 app.use("/api/themes", themeRoutes);
+
+app.use("/api/auth", authRoutes);
 
 app.use("/api/themes/:themeId/questions", themeQuestionRoutes);
 app.use("/api/themes/:themeId/problems", themeProblemRoutes);

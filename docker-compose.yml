@@ -5,9 +5,11 @@ services:
       context: .
       dockerfile: idea-discussion/backend/Dockerfile.dev
     volumes:
-      - ./idea-discussion/backend:/app/idea-discussion/backend
-      # Prevent node_modules from being overwritten by host mount
-      - /app/idea-discussion/backend/node_modules
+      - ./idea-discussion/backend:/app
+      # Explicitly exclude node_modules from the host mount
+      - /app/node_modules
+      # Add a named volume for node_modules to persist between container restarts
+      - idea_backend_node_modules:/app/node_modules
     ports:
       - "3000:3000" # Expose backend API port
     depends_on:
@@ -25,6 +27,7 @@ services:
       - GITHUB_TARGET_REPO=${GITHUB_TARGET_REPO}
       - GITHUB_BASE_BRANCH=${GITHUB_BASE_BRANCH}
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - IDEA_CORS_ORIGIN=${IDEA_CORS_ORIGIN}
     command: npm run dev # Command defined in Dockerfile.dev, but explicit here
 
   # --- policy-edit ---
@@ -47,6 +50,7 @@ services:
       # Map GITHUB_TARGET_* from .env to VITE_GITHUB_* for the frontend
       - VITE_GITHUB_REPO_OWNER=${GITHUB_TARGET_OWNER}
       - VITE_GITHUB_REPO_NAME=${GITHUB_TARGET_REPO}
+      - VITE_POLICY_FRONTEND_ALLOWED_HOSTS=${VITE_POLICY_FRONTEND_ALLOWED_HOSTS}
 
   policy-backend:
     container_name: policy-backend-dev
@@ -61,7 +65,7 @@ services:
     environment:
       - NODE_ENV=development
       # Ensure CORS allows the frontend origin (running on host port 5174)
-      - CORS_ORIGIN=http://localhost:5174
+      - POLICY_CORS_ORIGIN=${POLICY_CORS_ORIGIN}
     # Run the production start command
     command: npm start
 
@@ -82,6 +86,7 @@ services:
     environment:
       - NODE_ENV=development
       - VITE_API_BASE_URL=${IDEA_FRONTEND_API_BASE_URL} # 初期段階ではidea-discussionのAPIを使用
+      - VITE_FRONTEND_ALLOWED_HOSTS=${VITE_FRONTEND_ALLOWED_HOSTS}
 
   # --- Database ---
   mongo:
@@ -92,6 +97,24 @@ services:
     volumes:
       - mongo_data:/data/db # Persist data using a named volume
 
+  # --- Admin Panel ---
+  admin:
+    container_name: admin-dev
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./admin:/app
+      - /app/node_modules
+    ports:
+      - "5175:5173" # 他のサービスとポートが重複しないようにする
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+      - VITE_API_BASE_URL=http://localhost:3000 # idea-discussionバックエンドを指す
+
 volumes:
   mongo_data: # Define the named volume for MongoDB
+  idea_backend_node_modules: # Define the named volume for idea-backend node_modules
   # Removed node_modules volumes as they are part of the production image
