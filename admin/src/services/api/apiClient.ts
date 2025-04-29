@@ -40,7 +40,6 @@ export class ApiClient {
       }
     }
 
-
     const config = {
       ...options,
       headers,
