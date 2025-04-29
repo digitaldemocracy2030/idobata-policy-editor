@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ThemeService } from "../services/ThemeService";
-import type { ThemeWithCounts } from "../types";
 import { ApiError } from "../services/api/apiError";
+import type { ThemeWithCounts } from "../types";
 
 interface UseThemesResult {
   themes: ThemeWithCounts[];

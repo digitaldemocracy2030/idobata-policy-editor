@@ -1,6 +1,7 @@
+import type { ThemeWithCounts } from "../types";
 import { apiClient } from "./api/apiClient";
-import type { Theme, ThemeWithCounts } from "../types";
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class ThemeService {
   static async getAllThemes(): Promise<ThemeWithCounts[]> {
     const result = await apiClient.getAllThemes();
