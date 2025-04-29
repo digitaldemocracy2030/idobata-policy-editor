@@ -9,12 +9,12 @@ import {
 import BreadcrumbView from "../components/common/BreadcrumbView";
 import CommentCard from "../components/theme/CommentCard";
 import KeyQuestionCard from "../components/theme/KeyQuestionCard";
+import { useTheme } from "../hooks/useTheme";
+import { useThemeProblems } from "../hooks/useThemeProblems";
+import { useThemeQuestions } from "../hooks/useThemeQuestions";
+import { useThemeSolutions } from "../hooks/useThemeSolutions";
 import { apiClient } from "../services/api/apiClient";
 import type { NotificationType, PreviousExtractions } from "../types";
-import { useTheme } from "../hooks/useTheme";
-import { useThemeQuestions } from "../hooks/useThemeQuestions";
-import { useThemeProblems } from "../hooks/useThemeProblems";
-import { useThemeSolutions } from "../hooks/useThemeSolutions";
 
 const ThemeDetail = () => {
   const { themeId } = useParams<{ themeId: string }>();
@@ -30,7 +30,7 @@ const ThemeDetail = () => {
       problems: [],
       solutions: [],
     });
-    
+
   const {
     theme,
     loading: themeLoading,
@@ -54,9 +54,12 @@ const ThemeDetail = () => {
 
   const isLoading =
     themeLoading || questionsLoading || issuesLoading || solutionsLoading;
-  const errors = [themeError, questionsError, issuesError, solutionsError].filter(
-    Boolean
-  );
+  const errors = [
+    themeError,
+    questionsError,
+    issuesError,
+    solutionsError,
+  ].filter(Boolean);
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
@@ -69,10 +72,8 @@ const ThemeDetail = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const newThreadId = uuidv4();
-    setCurrentThreadId(newThreadId);
-  }, []);
+  // We'll let the backend generate the thread ID when the first message is sent
+  // instead of generating a UUID that doesn't match MongoDB's ObjectId format
 
   const handleSendMessage = async (message: string) => {
     if (!userId || !themeId || !currentThreadId) {
@@ -83,11 +84,13 @@ const ThemeDetail = () => {
     console.log("Message sent:", message);
 
     try {
+      // If currentThreadId is null, this is the first message in a new thread
+      // Let the backend create a new thread and return its ID
       const result = await apiClient.sendMessage(
         userId,
         message,
         themeId,
-        currentThreadId
+        currentThreadId || undefined
       );
 
       if (result.isErr()) {
@@ -99,8 +102,14 @@ const ThemeDetail = () => {
         return;
       }
 
-      const { response } = result.value;
+      const { response, threadId: newThreadId } = result.value;
       chatRef.current?.addMessage(response, "system");
+
+      // If this was the first message, store the thread ID returned from the backend
+      if (!currentThreadId && newThreadId) {
+        setCurrentThreadId(newThreadId);
+      }
+
       setMessageHasBeenSent(true); // メッセージが正常に送信された後にフラグを設定
 
       checkForNewExtractions();
@@ -120,6 +129,12 @@ const ThemeDetail = () => {
     }
 
     if (!messageHasBeenSent) {
+      return;
+    }
+
+    // Ensure threadId is a valid MongoDB ObjectId before making the API call
+    if (!/^[0-9a-fA-F]{24}$/.test(currentThreadId)) {
+      console.warn("Invalid thread ID format for MongoDB ObjectId");
       return;
     }
 
@@ -172,6 +187,12 @@ const ThemeDetail = () => {
 
   useEffect(() => {
     if (!currentThreadId || !themeId || !messageHasBeenSent) return;
+
+    // Ensure threadId is a valid MongoDB ObjectId before setting up the interval
+    if (!/^[0-9a-fA-F]{24}$/.test(currentThreadId)) {
+      console.warn("Invalid thread ID format for extraction check interval");
+      return;
+    }
 
     checkForNewExtractions();
 
@@ -344,41 +365,32 @@ const ThemeDetail = () => {
           </button>
         </div>
 
-        {showExtractions && currentThreadId && themeId && (
-          <div className="bg-neutral-50 p-4 rounded-lg border border-neutral-200">
-            <ThreadExtractions threadId={currentThreadId} themeId={themeId} />
-          </div>
-        )}
+        {showExtractions &&
+          currentThreadId &&
+          themeId &&
+          /^[0-9a-fA-F]{24}$/.test(currentThreadId) && (
+            <div className="bg-neutral-50 p-4 rounded-lg border border-neutral-200">
+              <ThreadExtractions threadId={currentThreadId} themeId={themeId} />
+            </div>
+          )}
       </div>
 
       {/* フローティングチャットと抽出結果表示エリア */}
       <div className="relative">
-        {/* 抽出結果表示切り替えボタン */}
-        <div className="fixed bottom-20 right-4 z-40">
-          <button
-            onClick={() => setShowExtractions(!showExtractions)}
-            disabled={!currentThreadId}
-            className={`px-2 py-1 rounded-md text-xs border border-neutral-300 transition-colors duration-200 ${
-              !currentThreadId
-                ? "bg-neutral-100 text-neutral-300 cursor-not-allowed"
-                : showExtractions
-                  ? "bg-neutral-200 text-neutral-700 hover:bg-neutral-300"
-                  : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
-            }`}
-            type="button"
-          >
-            抽出された課題/解決策を{showExtractions ? "非表示" : "表示"}
-          </button>
-        </div>
-
         {/* 抽出結果表示エリア */}
-        {showExtractions && currentThreadId && themeId && (
-          <div className="fixed bottom-20 right-4 w-80 bg-white border border-neutral-200 rounded-lg shadow-lg z-30">
-            <div className="p-3 max-h-60 overflow-y-auto custom-scrollbar">
-              <ThreadExtractions threadId={currentThreadId} themeId={themeId} />
+        {showExtractions &&
+          currentThreadId &&
+          themeId &&
+          /^[0-9a-fA-F]{24}$/.test(currentThreadId) && (
+            <div className="fixed bottom-20 right-4 w-80 bg-white border border-neutral-200 rounded-lg shadow-lg z-30">
+              <div className="p-3 max-h-60 overflow-y-auto custom-scrollbar">
+                <ThreadExtractions
+                  threadId={currentThreadId}
+                  themeId={themeId}
+                />
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
         {/* フローティングチャット */}
         <FloatingChat ref={chatRef} onSendMessage={handleSendMessage} />

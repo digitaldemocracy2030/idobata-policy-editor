@@ -20,6 +20,15 @@ const ThreadExtractions = ({ threadId, themeId }: ThreadExtractionsProps) => {
       return;
     }
 
+    // Ensure threadId is a valid MongoDB ObjectId (24 character hex string)
+    // This prevents API calls with UUID format that would cause CastError in MongoDB
+    if (!/^[0-9a-fA-F]{24}$/.test(threadId)) {
+      console.warn("Invalid thread ID format for MongoDB ObjectId:", threadId);
+      setProblems([]);
+      setSolutions([]);
+      return;
+    }
+
     const fetchExtractions = async (): Promise<void> => {
       setError(null);
 
@@ -57,8 +66,8 @@ const ThreadExtractions = ({ threadId, themeId }: ThreadExtractionsProps) => {
     return () => clearInterval(intervalId);
   }, [threadId, themeId]); // Re-run effect when threadId or themeId changes
 
-  // Do not render anything if there's no threadId or themeId
-  if (!threadId || !themeId) {
+  // Do not render anything if there's no valid threadId or themeId
+  if (!threadId || !themeId || !/^[0-9a-fA-F]{24}$/.test(threadId)) {
     return null;
   }
 
