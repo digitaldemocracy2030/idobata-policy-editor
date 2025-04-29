@@ -10,6 +10,7 @@
 - [プロジェクト状況](./project_status.md) (開発者向け、本ドキュメント)
 - [開発環境構築ガイド](./development-setup.md) (開発者向け)
 - [コントリビューションガイド](./CONTRIBUTING.md) (開発者向け)
+- [ワイヤーフレームデザイン](https://www.figma.com/design/Td64AEvdk42ov6t6IPEvTN/DD2030?node-id=0-1)
 
 ## 1. プロジェクト概要
 
