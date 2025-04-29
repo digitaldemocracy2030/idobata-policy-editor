@@ -1,12 +1,12 @@
 import { type Result, err, ok } from "neverthrow";
 import { ApiError, ApiErrorType } from "./apiError";
-import type { 
-  CreateThemePayload, 
-  Theme, 
-  UpdateThemePayload,
+import type {
+  CreateThemePayload,
   LoginCredentials,
   LoginResponse,
-  UserResponse
+  Theme,
+  UpdateThemePayload,
+  UserResponse,
 } from "./types";
 
 export type ApiResult<T> = Result<T, ApiError>;
@@ -34,7 +34,6 @@ export class ApiClient {
       if (!csrfToken) {
         await this.fetchCsrfToken();
       }
-      
       if (csrfToken) {
         (headers as Record<string, string>)["X-CSRF-Token"] = csrfToken;
       }
@@ -93,7 +92,6 @@ export class ApiClient {
       );
     }
   }
-  
   private async fetchCsrfToken(): Promise<void> {
     try {
       const response = await fetch(`${this.baseUrl}/auth/csrf-token`, {

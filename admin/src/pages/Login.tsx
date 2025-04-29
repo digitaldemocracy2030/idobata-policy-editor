@@ -24,10 +24,14 @@ const Login = () => {
       if (success) {
         navigate("/");
       } else {
-        setError("ログインに失敗しました。メールアドレスとパスワードを確認してください。");
+        setError(
+          "ログインに失敗しました。メールアドレスとパスワードを確認してください。"
+        );
       }
     } catch (err) {
-      setError("ログイン中にエラーが発生しました。後でもう一度お試しください。");
+      setError(
+        "ログイン中にエラーが発生しました。後でもう一度お試しください。"
+      );
       console.error("Login error:", err);
     } finally {
       setIsLoading(false);
