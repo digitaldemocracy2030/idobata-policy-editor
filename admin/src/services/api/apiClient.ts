@@ -97,7 +97,7 @@ export class ApiClient {
       const response = await fetch(`${this.baseUrl}/auth/csrf-token`, {
         credentials: "include",
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         csrfToken = data.csrfToken;
