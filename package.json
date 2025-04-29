@@ -14,7 +14,9 @@
     "frontend"
   ],
   "scripts": {
+    "check": "npm run lint && npm run typecheck && npm run test",
     "test": "npm run test -ws",
+    "typecheck": "npm run typecheck -ws",
     "lint": "biome check .",
     "format": "biome check --write ."
   }

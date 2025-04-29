@@ -8,6 +8,7 @@
     "build": "tsc",
     "build:mcp": "cd ../mcp && npm run build",
     "start": "node build/index.js",
+    "typecheck": "tsc --noEmit",
     "dev": "nodemon",
     "lint": "biome check .",
     "format": "biome check --write .",

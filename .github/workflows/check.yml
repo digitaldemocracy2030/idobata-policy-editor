@@ -9,8 +9,5 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
       - run: npm install
-      # TODO: tsc
-      - name: lint
-        run: npm run lint
-      - name: test
-        run: npm run test
+      - name: check
+        run: npm run check

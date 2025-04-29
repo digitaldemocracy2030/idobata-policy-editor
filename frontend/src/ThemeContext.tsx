@@ -7,7 +7,6 @@ import {
 } from "react";
 import { apiClient } from "./services/api/apiClient";
 import { ApiErrorType } from "./services/api/apiError";
-import type { Theme } from "./types";
 
 interface ThemeContextType {
   defaultThemeId: string | null;

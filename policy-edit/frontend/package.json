@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "biome check .",
+    "typecheck": "tsc --noEmit",
     "format": "biome check --write .",
     "test": "vitest run --passWithNoTests",
     "preview": "vite preview"

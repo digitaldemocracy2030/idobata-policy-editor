@@ -15,7 +15,7 @@ jobs:
           script: |
             const issueNodeId = context.payload.issue.node_id;
 
-            const projectNumber = 1;
+            const projectNumber = 6;
             const org = 'digitaldemocracy2030';
 
             const {

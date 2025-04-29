@@ -1,11 +1,5 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useImperativeHandle,
-  forwardRef,
-} from "react";
-import { ExtendedMessage, type MessageType } from "../../types";
+import { forwardRef, useImperativeHandle, useState } from "react";
+import { type MessageType } from "../../types";
 import { ChatProvider, useChat } from "./ChatProvider";
 import { ChatSheet } from "./ChatSheet";
 import { FloatingChatButton } from "./FloatingChatButton";

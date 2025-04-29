@@ -8,17 +8,18 @@ on:
     types: [created]
 
 jobs:
-  manage-assignment:
+  assign:
+    if: startsWith(github.event.comment.body, '/assign') || startsWith(github.event.comment.body, '/unassign')
     runs-on: ubuntu-latest
     steps:
-      - name: Process assignment comment only if command is used
-        if: startsWith(github.event.comment.body, '/assign') || startsWith(github.event.comment.body, '/unassign')
+      - name: Assign or Unassign
         uses: actions/github-script@v6
         with:
           script: |
             const commentBody = context.payload.comment.body.trim();
             const issueNumber = context.payload.issue.number;
             const username = context.payload.comment.user.login;
+
             if (commentBody === '/assign') {
               await github.rest.issues.addAssignees({
                 owner: context.repo.owner,
