@@ -1,6 +1,8 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+import { doubleCsrf } from "csrf-csrf";
 import express from "express";
 import mongoose from "mongoose";
 import themeRoutes from "./routes/themeRoutes.js"; // Import theme routes
@@ -31,6 +33,21 @@ mongoose
 const app = express();
 const PORT = process.env.PORT || 3000; // Use port from env or default to 3000
 
+app.use(cookieParser(process.env.COOKIE_SECRET || "dev-cookie-secret"));
+
+const { generateToken, doubleCsrfProtection } = doubleCsrf({
+  getSecret: () => process.env.CSRF_SECRET || "dev-csrf-secret",
+  cookieName: "csrf_token",
+  cookieOptions: {
+    httpOnly: true,
+    sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+  },
+  size: 64, // トークンのサイズ
+  ignoredMethods: ["GET", "HEAD", "OPTIONS"],
+});
+
 // --- Middleware ---
 // CORS: Allow requests from the frontend development server
 app.use(
@@ -38,6 +55,7 @@ app.use(
     origin: process.env.IDEA_CORS_ORIGIN
       ? process.env.IDEA_CORS_ORIGIN.split(",")
       : ["http://localhost:5173", "http://localhost:5175"],
+    credentials: true, // クッキーを許可するために追加
     // Add other origins (e.g., production frontend URL) if needed
   })
 );
@@ -51,6 +69,7 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date() });
 });
 
+import authRoutes from "./routes/authRoutes.js"; // 認証ルート
 import themeChatRoutes from "./routes/themeChatRoutes.js";
 import themeDigestRoutes from "./routes/themeDigestRoutes.js";
 import themeGenerateQuestionsRoutes from "./routes/themeGenerateQuestionsRoutes.js";
@@ -63,6 +82,8 @@ import themeSolutionRoutes from "./routes/themeSolutionRoutes.js";
 
 // Theme management routes
 app.use("/api/themes", themeRoutes);
+
+app.use("/api/auth", doubleCsrfProtection, authRoutes);
 
 app.use("/api/themes/:themeId/questions", themeQuestionRoutes);
 app.use("/api/themes/:themeId/problems", themeProblemRoutes);

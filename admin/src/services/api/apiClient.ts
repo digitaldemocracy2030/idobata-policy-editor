@@ -1,8 +1,17 @@
 import { type Result, err, ok } from "neverthrow";
 import { ApiError, ApiErrorType } from "./apiError";
-import type { CreateThemePayload, Theme, UpdateThemePayload } from "./types";
+import type { 
+  CreateThemePayload, 
+  Theme, 
+  UpdateThemePayload,
+  LoginCredentials,
+  LoginResponse,
+  UserResponse
+} from "./types";
 
 export type ApiResult<T> = Result<T, ApiError>;
+
+let csrfToken: string | null = null;
 
 export class ApiClient {
   private baseUrl: string;
@@ -21,9 +30,20 @@ export class ApiClient {
       ...options.headers,
     };
 
+    if (["POST", "PUT", "DELETE"].includes(options.method || "")) {
+      if (!csrfToken) {
+        await this.fetchCsrfToken();
+      }
+      
+      if (csrfToken) {
+        (headers as Record<string, string>)["X-CSRF-Token"] = csrfToken;
+      }
+    }
+
     const config = {
       ...options,
       headers,
+      credentials: "include", // クッキーを含める
     };
 
     try {
@@ -42,6 +62,7 @@ export class ApiClient {
             break;
           case 401:
             errorType = ApiErrorType.UNAUTHORIZED;
+            csrfToken = null;
             break;
           case 403:
             errorType = ApiErrorType.FORBIDDEN;
@@ -70,6 +91,21 @@ export class ApiClient {
           error instanceof Error ? error.message : "Network error occurred"
         )
       );
+    }
+  }
+  
+  private async fetchCsrfToken(): Promise<void> {
+    try {
+      const response = await fetch(`${this.baseUrl}/auth/csrf-token`, {
+        credentials: "include",
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        csrfToken = data.csrfToken;
+      }
+    } catch (error) {
+      console.error("Failed to fetch CSRF token:", error);
     }
   }
 
@@ -102,6 +138,25 @@ export class ApiClient {
     return this.request<{ message: string }>(`/themes/${id}`, {
       method: "DELETE",
     });
+  }
+
+  async login(
+    credentials: LoginCredentials
+  ): Promise<ApiResult<LoginResponse>> {
+    return this.request<LoginResponse>("/auth/login", {
+      method: "POST",
+      body: JSON.stringify(credentials),
+    });
+  }
+
+  async logout(): Promise<ApiResult<{ message: string }>> {
+    return this.request<{ message: string }>("/auth/logout", {
+      method: "POST",
+    });
+  }
+
+  async getCurrentUser(): Promise<ApiResult<UserResponse>> {
+    return this.request<UserResponse>("/auth/me");
   }
 }
 
