@@ -1,5 +1,5 @@
 import WebSocket from "ws";
-import http from "http";
+import http from "node:http";
 
 export function setupWebSocketServer(server) {
   const wss = new WebSocket.Server({ server });

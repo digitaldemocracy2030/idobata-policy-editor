@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 import cors from "cors";
 import express from "express";
 import mongoose from "mongoose";
-import http from "http";
+import http from "node:http";
 import { setupWebSocketServer } from "./websocketServer.js";
 import { setupChangeStreams } from "./changeStreamManager.js";
 import themeRoutes from "./routes/themeRoutes.js"; // Import theme routes

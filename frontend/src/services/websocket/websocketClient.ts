@@ -31,11 +31,11 @@ export class WebSocketClient {
         this.socket.onopen = () => {
           console.log("WebSocket connected");
           this.reconnectAttempts = 0;
-          
+
           this.subscribedThreads.forEach((threadId) => {
             this.subscribeToThread(threadId);
           });
-          
+
           resolve();
         };
 
@@ -43,7 +43,7 @@ export class WebSocketClient {
           try {
             const data = JSON.parse(event.data);
             const eventType = data.type;
-            
+
             if (this.subscribers.has(eventType)) {
               this.subscribers.get(eventType)?.forEach((callback) => {
                 callback(data);
@@ -62,11 +62,11 @@ export class WebSocketClient {
         this.socket.onclose = () => {
           console.log("WebSocket connection closed");
           this.connectionPromise = null;
-          
+
           if (this.reconnectAttempts < this.maxReconnectAttempts) {
             const delay = this.getReconnectDelay();
             console.log(`Attempting to reconnect in ${delay}ms...`);
-            
+
             setTimeout(() => {
               this.reconnectAttempts++;
               this.connect().catch((error) => {
@@ -95,9 +95,9 @@ export class WebSocketClient {
     if (!this.subscribers.has(eventType)) {
       this.subscribers.set(eventType, new Set());
     }
-    
+
     this.subscribers.get(eventType)?.add(callback);
-    
+
     return () => {
       const callbacks = this.subscribers.get(eventType);
       if (callbacks) {
@@ -142,6 +142,6 @@ export function getWebSocketClient(): WebSocketClient {
     const clientId = localStorage.getItem("userId") || crypto.randomUUID();
     wsClientInstance = new WebSocketClient(wsUrl, clientId);
   }
-  
+
   return wsClientInstance;
 }
