@@ -83,7 +83,7 @@ import themeSolutionRoutes from "./routes/themeSolutionRoutes.js";
 // Theme management routes
 app.use("/api/themes", themeRoutes);
 
-app.use("/api/auth", doubleCsrfProtection, authRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/themes/:themeId/questions", themeQuestionRoutes);
 app.use("/api/themes/:themeId/problems", themeProblemRoutes);
 app.use("/api/themes/:themeId/solutions", themeSolutionRoutes);

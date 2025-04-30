@@ -7,18 +7,33 @@ import {
   logout,
 } from "../controllers/authController.js";
 import { admin, protect } from "../middleware/authMiddleware.js";
+import { doubleCsrf } from "csrf-csrf";
 
 const router = express.Router();
 
-router.get("/csrf-token", (req, res) => {
-  const token = req.csrfToken ? req.csrfToken() : null;
+const { doubleCsrfProtection } = doubleCsrf({
+  getSecret: () => process.env.CSRF_SECRET || "dev-csrf-secret",
+  cookieName: "csrf_token",
+  cookieOptions: {
+    httpOnly: true,
+    sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+  },
+  size: 64,
+  ignoredMethods: ["GET", "HEAD", "OPTIONS"],
+});
+
+router.get("/csrf-token", doubleCsrfProtection, (req, res) => {
+  const token = req.csrfToken();
   res.json({ csrfToken: token });
 });
 
-router.post("/login", login);
-router.post("/logout", logout);
-router.get("/me", protect, getCurrentUser);
-router.post("/users", protect, admin, createAdminUser);
+router.post("/login", doubleCsrfProtection, login);
+router.post("/logout", doubleCsrfProtection, logout);
+router.get("/me", doubleCsrfProtection, protect, getCurrentUser);
+router.post("/users", doubleCsrfProtection, protect, admin, createAdminUser);
+
 router.post("/initialize", initializeAdminUser);
 
 export default router;
