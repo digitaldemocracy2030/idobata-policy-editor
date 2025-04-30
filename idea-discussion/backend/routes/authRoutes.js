@@ -1,3 +1,4 @@
+import { doubleCsrf } from "csrf-csrf";
 import express from "express";
 import {
   createAdminUser,
@@ -7,7 +8,6 @@ import {
   logout,
 } from "../controllers/authController.js";
 import { admin, protect } from "../middleware/authMiddleware.js";
-import { doubleCsrf } from "csrf-csrf";
 
 const router = express.Router();
 
