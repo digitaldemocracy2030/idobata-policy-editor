@@ -41,8 +41,8 @@ export function setupChangeStreams(notifyClients) {
           threadId,
           extractions: {
             problems,
-            solutions
-          }
+            solutions,
+          },
         });
       }
     }
