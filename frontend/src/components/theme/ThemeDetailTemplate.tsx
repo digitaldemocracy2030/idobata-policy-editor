@@ -4,6 +4,7 @@ import { FloatingChat, type FloatingChatRef } from "../chat/FloatingChat";
 import BreadcrumbView from "../common/BreadcrumbView";
 import CommentCard from "./CommentCard";
 import KeyQuestionCard from "./KeyQuestionCard";
+import { useWebSocket } from "../../contexts/WebSocketContext";
 
 interface ThemeDetailTemplateProps {
   theme: {
@@ -87,6 +88,42 @@ const ThemeDetailTemplate = ({
       localStorage.setItem("userId", userId);
     }
   }, [userId]);
+  
+  const { subscribeToExtractions } = useWebSocket();
+  
+  useEffect(() => {
+    if (!threadId) return;
+
+    const unsubscribe = subscribeToExtractions(threadId, (data) => {
+      const { extractions } = data;
+
+      if (
+        extractions &&
+        (extractions.problems.length > 0 || extractions.solutions.length > 0)
+      ) {
+        let extractionMessage =
+          "あなたのメッセージから以下の内容が抽出されました：\n";
+
+        if (extractions.problems.length > 0) {
+          extractionMessage += "\n【課題】\n";
+          extractions.problems.forEach((problem) => {
+            extractionMessage += `・${problem.statement}\n`;
+          });
+        }
+
+        if (extractions.solutions.length > 0) {
+          extractionMessage += "\n【解決策】\n";
+          extractions.solutions.forEach((solution) => {
+            extractionMessage += `・${solution.statement}\n`;
+          });
+        }
+
+        chatRef.current?.addMessage(extractionMessage, "notification");
+      }
+    });
+
+    return unsubscribe;
+  }, [threadId, subscribeToExtractions]);
 
   return (
     <div className="container mx-auto px-4 py-8">

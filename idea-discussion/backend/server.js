@@ -3,6 +3,9 @@ import { fileURLToPath } from "node:url";
 import cors from "cors";
 import express from "express";
 import mongoose from "mongoose";
+import http from "http";
+import { setupWebSocketServer } from "./websocketServer.js";
+import { setupChangeStreams } from "./changeStreamManager.js";
 import themeRoutes from "./routes/themeRoutes.js"; // Import theme routes
 import { callLLM } from "./services/llmService.js"; // Import LLM service
 
@@ -21,6 +24,7 @@ mongoose
   .connect(mongoUri)
   .then(() => {
     console.log("MongoDB connected successfully.");
+    setupChangeStreams(notifyClients);
   })
   .catch((err) => {
     console.error("MongoDB connection error:", err);
@@ -30,6 +34,9 @@ mongoose
 // --- Express App Setup ---
 const app = express();
 const PORT = process.env.PORT || 3000; // Use port from env or default to 3000
+const server = http.createServer(app);
+
+const { notifyClients } = setupWebSocketServer(server);
 
 // --- Middleware ---
 // CORS: Allow requests from the frontend development server
@@ -125,6 +132,6 @@ app.use((err, req, res, next) => {
 });
 
 // --- Start Server ---
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Backend server listening on port ${PORT}`);
 });

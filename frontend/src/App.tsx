@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate, Outlet, createBrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "./ThemeContext";
+import { WebSocketProvider } from "./contexts/WebSocketContext";
 import AppLayout from "./components/AppLayout";
 import PageLayout from "./components/layout/PageLayout";
 import About from "./pages/About";
@@ -33,7 +34,9 @@ export const router = createBrowserRouter([
     path: "/",
     element: (
       <ThemeProvider>
-        <App />
+        <WebSocketProvider>
+          <App />
+        </WebSocketProvider>
       </ThemeProvider>
     ),
     children: [

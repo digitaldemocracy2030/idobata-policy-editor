@@ -39,14 +39,14 @@ function ExtendedChatHistory({ messages }: ExtendedChatHistoryProps) {
           className={cn("animate-fade-in mb-3", {
             "flex justify-end": msg.type === "user",
             "flex justify-start": msg.type === "system",
-            "flex justify-center": msg.type === "system-message",
+            "flex justify-center": msg.type === "system-message" || msg.type === "notification",
           })}
         >
           <div
             className={cn("flex flex-col max-w-[90%]", {
               "items-end": msg.type === "user",
               "items-start": msg.type === "system",
-              "items-center": msg.type === "system-message",
+              "items-center": msg.type === "system-message" || msg.type === "notification",
             })}
           >
             <div
@@ -57,6 +57,8 @@ function ExtendedChatHistory({ messages }: ExtendedChatHistoryProps) {
                   msg.type === "system",
                 "bg-neutral-100 border border-neutral-200 text-neutral-800 rounded-2xl":
                   msg.type === "system-message",
+                "bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-2xl":
+                  msg.type === "notification",
               })}
             >
               <div className="text-sm whitespace-pre-wrap">

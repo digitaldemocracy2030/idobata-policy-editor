@@ -90,7 +90,7 @@ export interface Theme {
   commentCount?: number;
 }
 
-export type MessageType = "user" | "system" | "system-message";
+export type MessageType = "user" | "system" | "system-message" | "notification";
 
 export interface ExtendedMessage extends Message {
   type: MessageType;
