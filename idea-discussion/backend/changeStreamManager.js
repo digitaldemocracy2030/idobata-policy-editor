@@ -3,7 +3,9 @@ import ChatThread from "./models/ChatThread.js";
 
 export function setupChangeStreams(notifyClients) {
   if (!mongoose.connection.readyState) {
-    console.error("MongoDB connection not established. Change streams require an active connection.");
+    console.error(
+      "MongoDB connection not established. Change streams require an active connection."
+    );
     return;
   }
 
@@ -14,9 +16,9 @@ export function setupChangeStreams(notifyClients) {
           "updateDescription.updatedFields": {
             $or: [
               { $regex: /^extractedProblemIds/ },
-              { $regex: /^extractedSolutionIds/ }
-            ]
-          }
+              { $regex: /^extractedSolutionIds/ },
+            ],
+          },
         }
       }
     ],
@@ -29,11 +31,11 @@ export function setupChangeStreams(notifyClients) {
       const fullDocument = change.fullDocument;
 
       if (fullDocument) {
-        const problems = await mongoose.model("Problem").find({ 
-          _id: { $in: fullDocument.extractedProblemIds } 
+        const problems = await mongoose.model("Problem").find({
+          _id: { $in: fullDocument.extractedProblemIds },
         });
-        const solutions = await mongoose.model("Solution").find({ 
-          _id: { $in: fullDocument.extractedSolutionIds } 
+        const solutions = await mongoose.model("Solution").find({
+          _id: { $in: fullDocument.extractedSolutionIds },
         });
 
         notifyClients(threadId, {

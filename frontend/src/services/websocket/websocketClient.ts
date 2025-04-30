@@ -17,7 +17,7 @@ export class WebSocketClient {
   private getReconnectDelay(): number {
     return Math.min(
       30000,
-      this.reconnectInterval * Math.pow(2, this.reconnectAttempts)
+      this.reconnectInterval * 2 ** this.reconnectAttempts
     );
   }
 
@@ -91,7 +91,10 @@ export class WebSocketClient {
     }
   }
 
-  public subscribe(eventType: string, callback: (data: any) => void): () => void {
+  public subscribe(
+    eventType: string,
+    callback: (data: any) => void
+  ): () => void {
     if (!this.subscribers.has(eventType)) {
       this.subscribers.set(eventType, new Set());
     }
