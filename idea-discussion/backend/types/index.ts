@@ -1,5 +1,5 @@
 
-import { Document, Types } from 'mongoose';
+import { Document, Types } from "mongoose";
 
 export interface BaseDocument extends Document {
   createdAt: Date;
@@ -34,7 +34,7 @@ export interface ISolution extends BaseDocument {
 }
 
 export interface IChatMessage {
-  role: 'user' | 'assistant' | 'system';
+  role: "user" | "assistant" | "system";
   content: string;
   timestamp: Date;
 }
@@ -49,7 +49,7 @@ export interface IChatThread extends BaseDocument {
 export interface IQuestionLink extends BaseDocument {
   questionId: Types.ObjectId;
   linkedItemId: Types.ObjectId;
-  linkedItemType: 'problem' | 'solution';
+  linkedItemType: "problem" | "solution";
   relevanceScore: number;
 }
 
@@ -77,11 +77,13 @@ export interface EnhancedTheme {
 
 export interface ThemeDetailResponse {
   theme: ITheme;
-  keyQuestions: Array<ISharpQuestion & {
-    issueCount: number;
-    solutionCount: number;
-    voteCount: number;
-  }>;
+  keyQuestions: Array<
+    ISharpQuestion & {
+      issueCount: number;
+      solutionCount: number;
+      voteCount: number;
+    }
+  >;
   issues: IProblem[];
   solutions: ISolution[];
 }

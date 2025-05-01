@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { IChatThread, IChatMessage } from "../types/index.js";
+import { IChatMessage, IChatThread } from "../types/index.js";
 
 const chatMessageSchema = new Schema<IChatMessage>({
   role: {

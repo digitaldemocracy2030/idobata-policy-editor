@@ -20,6 +20,9 @@ const sharpQuestionSchema = new Schema<ISharpQuestion>(
   { timestamps: true }
 );
 
-const SharpQuestion = mongoose.model<ISharpQuestion>("SharpQuestion", sharpQuestionSchema);
+const SharpQuestion = mongoose.model<ISharpQuestion>(
+  "SharpQuestion",
+  sharpQuestionSchema
+);
 
 export default SharpQuestion;
