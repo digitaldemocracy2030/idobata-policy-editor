@@ -144,7 +144,9 @@ class SocketClient {
 
   unsubscribeFromThread(threadId: string): void {
     if (this.currentThreadId !== threadId) {
-      console.log(`Not subscribed to thread: ${threadId}, skipping unsubscribe`);
+      console.log(
+        `Not subscribed to thread: ${threadId}, skipping unsubscribe`
+      );
       return;
     }
 
