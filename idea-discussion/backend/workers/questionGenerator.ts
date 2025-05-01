@@ -1,13 +1,13 @@
+import { Types } from "mongoose";
 import Problem from "../models/Problem.js";
 import SharpQuestion from "../models/SharpQuestion.js";
-import { callLLM } from "../services/llmService.js";
-import { linkQuestionToAllItems } from "./linkingWorker.js"; // Import the linking function
-import { Types } from "mongoose";
 import { ISharpQuestion } from "../types/index.js";
+import { ChatMessage, callLLM } from "../services/llmService.js";
+import { linkQuestionToAllItems } from "./linkingWorker.js"; // Import the linking function
 
 interface LLMResponse {
   questions: string[];
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 async function generateSharpQuestions(themeId: string | Types.ObjectId): Promise<void> {
@@ -27,7 +27,7 @@ async function generateSharpQuestions(themeId: string | Types.ObjectId): Promise
       `[QuestionGenerator] Found ${problemStatements.length} problem statements for theme ${themeId}.`
     );
 
-    const messages = [
+    const messages: ChatMessage[] = [
       {
         role: "system",
         content: `You are an AI assistant specialized in synthesizing problem statements into insightful "How Might We..." (HMW) questions based on Design Thinking principles. Your goal is to generate concise, actionable, and thought-provoking questions that capture the essence of the underlying challenges presented in the input problem statements. Consolidate similar problems into broader HMW questions where appropriate.

@@ -27,14 +27,14 @@ interface ExtractionItem {
 interface ExtractionResponse {
   additions?: ExtractionItem[];
   updates?: ExtractionItem[];
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface JobData {
   sourceType: "chat" | "tweet" | "other_import" | string;
   sourceOriginId: string;
   content?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   themeId: string | Types.ObjectId;
 }
 

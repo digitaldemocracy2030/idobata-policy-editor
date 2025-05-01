@@ -1,16 +1,16 @@
+import { Types } from "mongoose";
 import mongoose from "mongoose";
 import PolicyDraft from "../models/PolicyDraft.js";
 import Problem from "../models/Problem.js";
 import QuestionLink from "../models/QuestionLink.js";
 import SharpQuestion from "../models/SharpQuestion.js";
 import Solution from "../models/Solution.js";
-import { callLLM, ChatMessage } from "../services/llmService.js";
-import { Types } from "mongoose";
+import { ChatMessage, callLLM } from "../services/llmService.js";
 
 interface PolicyResponse {
   title: string;
   content: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 async function generatePolicyDraft(questionId: string): Promise<void> {

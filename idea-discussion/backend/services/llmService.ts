@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 import OpenAI from "openai";
 import { ApiResponse, IChatMessage } from "../types/index.js";
 
-
 dotenv.config({ override: true }); // Load environment variables from .env file
 
 const openai = new OpenAI({
@@ -26,14 +25,14 @@ async function callLLM(
   messages: ChatMessage[],
   jsonOutput = false,
   model = "google/gemini-2.0-flash-001"
-): Promise<string | Record<string, any>> {
-  const options: {
+): Promise<string | Record<string, unknown>> {
+  const options = {
+    model: model, // Default to gemini-2.0-flash-001, but allow override
+    messages: messages,
+  } as {
     model: string;
     messages: ChatMessage[];
     response_format?: { type: string };
-  } = {
-    model: model, // Default to gemini-2.0-flash-001, but allow override
-    messages: messages,
   };
   
   if (jsonOutput) {
@@ -47,7 +46,7 @@ async function callLLM(
   console.log("Calling LLM with options:", JSON.stringify(options, null, 2)); // Log request details
 
   try {
-    const completion = await openai.chat.completions.create(options);
+    const completion = await openai.chat.completions.create(options as any);
     console.log("LLM Response:", JSON.stringify(completion, null, 2)); // Log full response
     const content = completion.choices[0].message?.content;
 
