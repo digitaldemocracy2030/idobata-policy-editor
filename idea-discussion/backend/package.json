@@ -36,6 +36,7 @@
     "@types/jsonwebtoken": "^9.0.5",
     "@types/mongoose": "^5.11.97",
     "@types/node": "^20.11.5",
+    "@types/p-limit": "^2.1.0",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3",
