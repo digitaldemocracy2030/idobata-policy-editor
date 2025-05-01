@@ -150,35 +150,35 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log("New client connected:", socket.id);
-  
+
   socket.on("subscribe-theme", (themeId) => {
     if (themeId) {
       socket.join(`theme:${themeId}`);
       console.log(`Client ${socket.id} subscribed to theme:${themeId}`);
     }
   });
-  
+
   socket.on("subscribe-thread", (threadId) => {
     if (threadId) {
       socket.join(`thread:${threadId}`);
       console.log(`Client ${socket.id} subscribed to thread:${threadId}`);
     }
   });
-  
+
   socket.on("unsubscribe-theme", (themeId) => {
     if (themeId) {
       socket.leave(`theme:${themeId}`);
       console.log(`Client ${socket.id} unsubscribed from theme:${themeId}`);
     }
   });
-  
+
   socket.on("unsubscribe-thread", (threadId) => {
     if (threadId) {
       socket.leave(`thread:${threadId}`);
       console.log(`Client ${socket.id} unsubscribed from thread:${threadId}`);
     }
   });
-  
+
   socket.on("disconnect", () => {
     console.log("Client disconnected:", socket.id);
   });

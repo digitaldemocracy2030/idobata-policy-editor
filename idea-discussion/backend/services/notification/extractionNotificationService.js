@@ -20,24 +20,16 @@ class ExtractionNotificationService {
         type: "problem",
         data: problem,
       });
-      this._logEvent(
-        "new-extraction",
-        { type: "problem", data: problem },
-        room
-      );
+      this._logEvent("new-extraction", { type: "problem", data: problem }, room);
     }
-    
+
     if (threadId) {
       const room = `thread:${threadId}`;
       this.io.to(room).emit("new-extraction", {
         type: "problem",
         data: problem,
       });
-      this._logEvent(
-        "new-extraction",
-        { type: "problem", data: problem },
-        room
-      );
+      this._logEvent("new-extraction", { type: "problem", data: problem }, room);
     }
   }
 
@@ -54,24 +46,16 @@ class ExtractionNotificationService {
         type: "solution",
         data: solution,
       });
-      this._logEvent(
-        "new-extraction",
-        { type: "solution", data: solution },
-        room
-      );
+      this._logEvent("new-extraction", { type: "solution", data: solution }, room);
     }
-    
+
     if (threadId) {
       const room = `thread:${threadId}`;
       this.io.to(room).emit("new-extraction", {
         type: "solution",
         data: solution,
       });
-      this._logEvent(
-        "new-extraction",
-        { type: "solution", data: solution },
-        room
-      );
+      this._logEvent("new-extraction", { type: "solution", data: solution }, room);
     }
   }
 
@@ -89,24 +73,16 @@ class ExtractionNotificationService {
         type,
         data,
       });
-      this._logEvent(
-        "extraction-update",
-        { type, data },
-        room
-      );
+      this._logEvent("extraction-update", { type, data }, room);
     }
-    
+
     if (threadId) {
       const room = `thread:${threadId}`;
       this.io.to(room).emit("extraction-update", {
         type,
         data,
       });
-      this._logEvent(
-        "extraction-update",
-        { type, data },
-        room
-      );
+      this._logEvent("extraction-update", { type, data }, room);
     }
   }
 
