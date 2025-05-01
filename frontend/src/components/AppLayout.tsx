@@ -244,7 +244,7 @@ function AppLayout() {
         type: type as "problem" | "solution",
         id: item._id,
       });
-      
+
       // Update previous extractions state
       if (type === "problem") {
         setPreviousExtractions((prev) => ({
@@ -271,7 +271,7 @@ function AppLayout() {
         type: type as "problem" | "solution",
         id: item._id,
       });
-      
+
       // Update previous extractions state
       if (type === "problem") {
         setPreviousExtractions((prev) => ({
@@ -289,7 +289,7 @@ function AppLayout() {
         }));
       }
     });
-    
+
     // Clean up subscriptions when component unmounts or threadId changes
     return () => {
       socketClient.unsubscribeFromThread(currentThreadId);
