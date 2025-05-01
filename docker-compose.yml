@@ -1,11 +1,14 @@
 services:
   idea-backend:
     container_name: idea-backend-dev
-    image: node:20-alpine # ビルドせずに直接イメージを使用
-    working_dir: /app
+    build:
+      context: . # Change context to the root directory
+      dockerfile: ./idea-discussion/backend/Dockerfile # Specify Dockerfile path relative to new context
+      target: development # Build the development stage
     volumes:
-      - ./idea-discussion/backend:/app
-      - /app/node_modules
+      - ./idea-discussion/backend:/app/idea-discussion/backend # Mount source code for hot-reload
+      # Exclude node_modules from the host mount to use the container's node_modules
+      - /app/idea-discussion/backend/node_modules
     ports:
       - "3000:3000" # Expose backend API port
     depends_on:
@@ -24,7 +27,8 @@ services:
       - GITHUB_BASE_BRANCH=${GITHUB_BASE_BRANCH}
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
       - IDEA_CORS_ORIGIN=${IDEA_CORS_ORIGIN}
-    command: sh -c "npm install && npm run dev" # Install deps and run dev script
+    # Use the CMD defined in the Dockerfile's development stage
+    command: npm run dev
 
   # --- policy-edit ---
   policy-frontend:
@@ -112,4 +116,4 @@ services:
 
 volumes:
   mongo_data: # Define the named volume for MongoDB
-  # Removed idea_backend_node_modules as we're now using anonymous volume for node_modules
+  # Named volume for idea_backend_node_modules removed as we're using the multi-stage build approach
