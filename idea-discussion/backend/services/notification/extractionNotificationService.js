@@ -20,11 +20,7 @@ class ExtractionNotificationService {
         type: "problem",
         data: problem,
       });
-      this._logEvent(
-        "new-extraction",
-        { type: "problem", data: problem },
-        room
-      );
+      this._logEvent("new-extraction", { type: "problem", data: problem }, room);
     }
 
     if (threadId) {
@@ -33,11 +29,7 @@ class ExtractionNotificationService {
         type: "problem",
         data: problem,
       });
-      this._logEvent(
-        "new-extraction",
-        { type: "problem", data: problem },
-        room
-      );
+      this._logEvent("new-extraction", { type: "problem", data: problem }, room);
     }
   }
 
@@ -54,11 +46,7 @@ class ExtractionNotificationService {
         type: "solution",
         data: solution,
       });
-      this._logEvent(
-        "new-extraction",
-        { type: "solution", data: solution },
-        room
-      );
+      this._logEvent("new-extraction", { type: "solution", data: solution }, room);
     }
 
     if (threadId) {
@@ -67,11 +55,7 @@ class ExtractionNotificationService {
         type: "solution",
         data: solution,
       });
-      this._logEvent(
-        "new-extraction",
-        { type: "solution", data: solution },
-        room
-      );
+      this._logEvent("new-extraction", { type: "solution", data: solution }, room);
     }
   }
 
@@ -89,11 +73,7 @@ class ExtractionNotificationService {
         type,
         data,
       });
-      this._logEvent(
-        "extraction-update",
-        { type, data },
-        room
-      );
+      this._logEvent("extraction-update", { type, data }, room);
     }
 
     if (threadId) {
@@ -102,11 +82,7 @@ class ExtractionNotificationService {
         type,
         data,
       });
-      this._logEvent(
-        "extraction-update",
-        { type, data },
-        room
-      );
+      this._logEvent("extraction-update", { type, data }, room);
     }
   }
 
