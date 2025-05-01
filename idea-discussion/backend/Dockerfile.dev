@@ -10,6 +10,9 @@ COPY package.json package-lock.json* ./
 # Install dependencies
 RUN npm install
 
+# Add node_modules/.bin to PATH
+ENV PATH /app/node_modules/.bin:$PATH
+
 # Expose the port the backend will run on
 EXPOSE 3000
 
