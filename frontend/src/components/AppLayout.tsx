@@ -226,7 +226,6 @@ function AppLayout() {
       currentThreadId,
       currentThemeId,
     });
-    
     if (!currentThreadId || !currentThemeId) return;
 
     // Initial check
