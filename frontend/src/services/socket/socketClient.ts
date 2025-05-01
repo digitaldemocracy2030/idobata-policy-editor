@@ -98,6 +98,11 @@ class SocketClient {
   }
 
   subscribeToTheme(themeId: string): void {
+    if (this.currentThemeId === themeId) {
+      console.log(`Already subscribed to theme: ${themeId}, skipping`);
+      return;
+    }
+
     if (this.socket && this.isConnected) {
       this.socket.emit("subscribe-theme", themeId);
       this.currentThemeId = themeId;
@@ -109,6 +114,11 @@ class SocketClient {
   }
 
   subscribeToThread(threadId: string): void {
+    if (this.currentThreadId === threadId) {
+      console.log(`Already subscribed to thread: ${threadId}, skipping`);
+      return;
+    }
+
     if (this.socket && this.isConnected) {
       this.socket.emit("subscribe-thread", threadId);
       this.currentThreadId = threadId;
@@ -120,21 +130,27 @@ class SocketClient {
   }
 
   unsubscribeFromTheme(themeId: string): void {
+    if (this.currentThemeId !== themeId) {
+      console.log(`Not subscribed to theme: ${themeId}, skipping unsubscribe`);
+      return;
+    }
+
     if (this.socket && this.isConnected) {
       this.socket.emit("unsubscribe-theme", themeId);
-      if (this.currentThemeId === themeId) {
-        this.currentThemeId = null;
-      }
+      this.currentThemeId = null;
       console.log(`Unsubscribed from theme: ${themeId}`);
     }
   }
 
   unsubscribeFromThread(threadId: string): void {
+    if (this.currentThreadId !== threadId) {
+      console.log(`Not subscribed to thread: ${threadId}, skipping unsubscribe`);
+      return;
+    }
+
     if (this.socket && this.isConnected) {
       this.socket.emit("unsubscribe-thread", threadId);
-      if (this.currentThreadId === threadId) {
-        this.currentThreadId = null;
-      }
+      this.currentThreadId = null;
       console.log(`Unsubscribed from thread: ${threadId}`);
     }
   }

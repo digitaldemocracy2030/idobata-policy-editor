@@ -52,6 +52,7 @@ const ThreadExtractions = ({ threadId, themeId }: ThreadExtractionsProps) => {
     fetchExtractions();
 
     if (threadId && themeId) {
+      console.log("ThreadExtractions subscribing to WebSocket", { threadId, themeId });
       socketClient.subscribeToThread(threadId);
       socketClient.subscribeToTheme(themeId);
 
@@ -81,6 +82,7 @@ const ThreadExtractions = ({ threadId, themeId }: ThreadExtractionsProps) => {
 
       // Clean up subscriptions when component unmounts or threadId/themeId changes
       return () => {
+        console.log("ThreadExtractions useEffect cleanup", { threadId, themeId });
         if (threadId) socketClient.unsubscribeFromThread(threadId);
         if (themeId) socketClient.unsubscribeFromTheme(themeId);
         unsubscribeNew();

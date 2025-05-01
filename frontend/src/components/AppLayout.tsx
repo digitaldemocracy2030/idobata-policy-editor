@@ -222,11 +222,14 @@ function AppLayout() {
 
   // Update to use WebSocket for extraction notifications
   useEffect(() => {
+    console.log("AppLayout WebSocket useEffect running", { currentThreadId, currentThemeId });
+    
     if (!currentThreadId || !currentThemeId) return;
 
     // Initial check
     checkForNewExtractions();
 
+    console.log("AppLayout subscribing to WebSocket", { currentThreadId, currentThemeId });
     socketClient.subscribeToThread(currentThreadId);
     socketClient.subscribeToTheme(currentThemeId);
 
@@ -292,17 +295,13 @@ function AppLayout() {
 
     // Clean up subscriptions when component unmounts or threadId changes
     return () => {
+      console.log("AppLayout WebSocket useEffect cleanup", { currentThreadId, currentThemeId });
       socketClient.unsubscribeFromThread(currentThreadId);
       socketClient.unsubscribeFromTheme(currentThemeId);
       unsubscribeNew();
       unsubscribeUpdate();
     };
-  }, [
-    currentThreadId,
-    currentThemeId,
-    setNotification,
-    checkForNewExtractions,
-  ]);
+  }, [currentThreadId, currentThemeId]);
 
   // Load thread messages when component mounts or currentThreadId changes
   useEffect(() => {
