@@ -229,12 +229,11 @@ function AppLayout() {
 
     socketClient.subscribeToThread(currentThreadId);
     socketClient.subscribeToTheme(currentThemeId);
-    
+
     // Listen for new extractions
     const unsubscribeNew = socketClient.onNewExtraction((event) => {
       const type = event.type;
       const item = event.data;
-      
       setNotification({
         message: `ありがとうございます！新しい${type === "problem" ? "課題" : "解決策"}「${item.statement.substring(
           0,
@@ -259,11 +258,9 @@ function AppLayout() {
         }));
       }
     });
-    
     const unsubscribeUpdate = socketClient.onExtractionUpdate((event) => {
       const type = event.type;
       const item = event.data;
-      
       setNotification({
         message: `ありがとうございます！${type === "problem" ? "課題" : "解決策"}「${item.statement.substring(
           0,
@@ -300,7 +297,12 @@ function AppLayout() {
       unsubscribeNew();
       unsubscribeUpdate();
     };
-  }, [currentThreadId, currentThemeId, setNotification, checkForNewExtractions]);
+  }, [
+    currentThreadId,
+    currentThemeId,
+    setNotification,
+    checkForNewExtractions,
+  ]);
 
   // Load thread messages when component mounts or currentThreadId changes
   useEffect(() => {

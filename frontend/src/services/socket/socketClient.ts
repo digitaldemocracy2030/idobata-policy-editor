@@ -1,4 +1,4 @@
-import { io, Socket } from "socket.io-client";
+import { Socket, io } from "socket.io-client";
 import type { Problem, Solution } from "../../types";
 
 export interface NewExtractionEvent {
@@ -35,9 +35,10 @@ class SocketClient {
       return;
     }
 
-    const baseUrl = typeof import.meta.env !== 'undefined' 
-      ? import.meta.env.VITE_API_BASE_URL || "" 
-      : "";
+    const baseUrl =
+      typeof import.meta.env !== "undefined"
+        ? import.meta.env.VITE_API_BASE_URL || ""
+        : "";
     this.socket = io(baseUrl, {
       autoConnect: false,
       reconnection: true,
@@ -48,7 +49,7 @@ class SocketClient {
     this.socket.on("connect", () => {
       console.log("Socket connected:", this.socket?.id);
       this.isConnected = true;
-      
+
       if (this.currentThemeId) {
         this.subscribeToTheme(this.currentThemeId);
       }
@@ -56,23 +57,31 @@ class SocketClient {
         this.subscribeToThread(this.currentThreadId);
       }
 
-      this.connectCallbacks.forEach((callback) => callback());
+      for (const callback of this.connectCallbacks) {
+        callback();
+      }
     });
 
     this.socket.on("disconnect", () => {
       console.log("Socket disconnected");
       this.isConnected = false;
-      this.disconnectCallbacks.forEach((callback) => callback());
+      for (const callback of this.disconnectCallbacks) {
+        callback();
+      }
     });
 
     this.socket.on("new-extraction", (event: NewExtractionEvent) => {
       console.log("Received new extraction:", event);
-      this.newExtractionCallbacks.forEach((callback) => callback(event));
+      for (const callback of this.newExtractionCallbacks) {
+        callback(event);
+      }
     });
 
     this.socket.on("extraction-update", (event: ExtractionUpdateEvent) => {
       console.log("Received extraction update:", event);
-      this.extractionUpdateCallbacks.forEach((callback) => callback(event));
+      for (const callback of this.extractionUpdateCallbacks) {
+        callback(event);
+      }
     });
   }
 

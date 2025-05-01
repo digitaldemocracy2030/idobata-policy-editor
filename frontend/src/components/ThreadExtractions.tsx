@@ -54,7 +54,7 @@ const ThreadExtractions = ({ threadId, themeId }: ThreadExtractionsProps) => {
     if (threadId && themeId) {
       socketClient.subscribeToThread(threadId);
       socketClient.subscribeToTheme(themeId);
-      
+
       const unsubscribeNew = socketClient.onNewExtraction((event) => {
         if (event.type === "problem") {
           setProblems((prev) => [...prev, event.data as Problem]);
@@ -62,21 +62,23 @@ const ThreadExtractions = ({ threadId, themeId }: ThreadExtractionsProps) => {
           setSolutions((prev) => [...prev, event.data as Solution]);
         }
       });
-      
+
       const unsubscribeUpdate = socketClient.onExtractionUpdate((event) => {
         if (event.type === "problem") {
           const updatedProblem = event.data as Problem;
-          setProblems((prev) => 
+          setProblems((prev) =>
             prev.map((p) => (p._id === updatedProblem._id ? updatedProblem : p))
           );
         } else if (event.type === "solution") {
           const updatedSolution = event.data as Solution;
-          setSolutions((prev) => 
-            prev.map((s) => (s._id === updatedSolution._id ? updatedSolution : s))
+          setSolutions((prev) =>
+            prev.map((s) =>
+              s._id === updatedSolution._id ? updatedSolution : s
+            )
           );
         }
       });
-      
+
       // Clean up subscriptions when component unmounts or threadId/themeId changes
       return () => {
         if (threadId) socketClient.unsubscribeFromThread(threadId);
