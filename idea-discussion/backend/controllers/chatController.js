@@ -260,6 +260,7 @@ const handleNewMessageByTheme = async (req, res) => {
           metadata: {},
           themeId: themeId, // Include themeId in job data
         },
+        app: req.app // Pass the app context to access the notification service
       };
 
       processExtraction(job).catch((err) => {

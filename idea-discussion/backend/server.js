@@ -53,6 +53,7 @@ app.get("/api/health", (req, res) => {
 
 import authRoutes from "./routes/authRoutes.js"; // 追加: 認証ルート
 import siteConfigRoutes from "./routes/siteConfigRoutes.js";
+import systemRoutes from "./routes/systemRoutes.js";
 import themeChatRoutes from "./routes/themeChatRoutes.js";
 import themeDigestRoutes from "./routes/themeDigestRoutes.js";
 import themeGenerateQuestionsRoutes from "./routes/themeGenerateQuestionsRoutes.js";
@@ -67,6 +68,7 @@ import themeSolutionRoutes from "./routes/themeSolutionRoutes.js";
 app.use("/api/themes", themeRoutes);
 
 app.use("/api/auth", authRoutes);
+app.use("/api/system", systemRoutes);
 
 app.use("/api/themes/:themeId/questions", themeQuestionRoutes);
 app.use("/api/themes/:themeId/problems", themeProblemRoutes);
@@ -127,7 +129,62 @@ app.use((err, req, res, next) => {
   res.status(500).send("Something broke!");
 });
 
+// --- WebSocket Setup ---
+import http from 'node:http';
+import { Server } from 'socket.io';
+import ExtractionNotificationService from './services/notification/extractionNotificationService.js';
+
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: process.env.FRONTEND_URL || process.env.IDEA_CORS_ORIGIN?.split(",") || ['http://localhost:5173', 'http://localhost:5175'],
+    methods: ['GET', 'POST'],
+    credentials: true
+  }
+});
+
+io.on('connection', (socket) => {
+  console.log('New client connected:', socket.id);
+  
+  socket.on('subscribe-theme', (themeId) => {
+    if (themeId) {
+      socket.join(`theme:${themeId}`);
+      console.log(`Client ${socket.id} subscribed to theme:${themeId}`);
+    }
+  });
+  
+  socket.on('subscribe-thread', (threadId) => {
+    if (threadId) {
+      socket.join(`thread:${threadId}`);
+      console.log(`Client ${socket.id} subscribed to thread:${threadId}`);
+    }
+  });
+  
+  socket.on('unsubscribe-theme', (themeId) => {
+    if (themeId) {
+      socket.leave(`theme:${themeId}`);
+      console.log(`Client ${socket.id} unsubscribed from theme:${themeId}`);
+    }
+  });
+  
+  socket.on('unsubscribe-thread', (threadId) => {
+    if (threadId) {
+      socket.leave(`thread:${threadId}`);
+      console.log(`Client ${socket.id} unsubscribed from thread:${threadId}`);
+    }
+  });
+  
+  socket.on('disconnect', () => {
+    console.log('Client disconnected:', socket.id);
+  });
+});
+
+const extractionNotificationService = new ExtractionNotificationService(io);
+
+app.set('extractionNotificationService', extractionNotificationService);
+
 // --- Start Server ---
-app.listen(PORT, () => {
-  console.log(`Backend server listening on port ${PORT}`);
+server.listen(PORT, () => {
+  console.log(`Backend server with WebSocket is running on port ${PORT}`);
 });

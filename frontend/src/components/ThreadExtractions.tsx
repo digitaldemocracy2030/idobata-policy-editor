@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { apiClient } from "../services/api/apiClient";
+import { socketClient } from "../services/socket/socketClient";
 import type { Problem, Solution } from "../types";
 
 interface ThreadExtractionsProps {
@@ -50,11 +51,40 @@ const ThreadExtractions = ({ threadId, themeId }: ThreadExtractionsProps) => {
     // Fetch immediately on threadId change
     fetchExtractions();
 
-    // Set up interval for periodic fetching (e.g., every 5 seconds)
-    const intervalId = setInterval(fetchExtractions, 5000);
-
-    // Cleanup function to clear the interval when the component unmounts or threadId changes
-    return () => clearInterval(intervalId);
+    if (threadId && themeId) {
+      socketClient.subscribeToThread(threadId);
+      socketClient.subscribeToTheme(themeId);
+      
+      const unsubscribeNew = socketClient.onNewExtraction((event) => {
+        if (event.type === "problem") {
+          setProblems((prev) => [...prev, event.data as Problem]);
+        } else if (event.type === "solution") {
+          setSolutions((prev) => [...prev, event.data as Solution]);
+        }
+      });
+      
+      const unsubscribeUpdate = socketClient.onExtractionUpdate((event) => {
+        if (event.type === "problem") {
+          const updatedProblem = event.data as Problem;
+          setProblems((prev) => 
+            prev.map((p) => (p._id === updatedProblem._id ? updatedProblem : p))
+          );
+        } else if (event.type === "solution") {
+          const updatedSolution = event.data as Solution;
+          setSolutions((prev) => 
+            prev.map((s) => (s._id === updatedSolution._id ? updatedSolution : s))
+          );
+        }
+      });
+      
+      // Clean up subscriptions when component unmounts or threadId/themeId changes
+      return () => {
+        if (threadId) socketClient.unsubscribeFromThread(threadId);
+        if (themeId) socketClient.unsubscribeFromTheme(themeId);
+        unsubscribeNew();
+        unsubscribeUpdate();
+      };
+    }
   }, [threadId, themeId]); // Re-run effect when threadId or themeId changes
 
   // Do not render anything if there's no threadId or themeId

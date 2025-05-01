@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, Outlet, useOutletContext } from "react-router-dom";
 import { apiClient } from "../services/api/apiClient";
+import { socketClient } from "../services/socket/socketClient";
 import type {
   Message,
   NotificationType,
   OutletContext,
   PreviousExtractions,
+  Problem,
+  Solution
 } from "../types";
 import ChatHistory from "./ChatHistory";
 import ChatInput from "./ChatInput";
@@ -217,18 +220,81 @@ function AppLayout() {
     }
   }, [notification]);
 
-  // Check for new extractions periodically
+  // Update to use WebSocket for extraction notifications
   useEffect(() => {
-    if (!currentThreadId) return;
+    if (!currentThreadId || !currentThemeId) return;
 
     // Initial check
     checkForNewExtractions();
 
-    // Set up interval for periodic checks
-    const intervalId = setInterval(checkForNewExtractions, 5000); // Check every 5 seconds
-
-    return () => clearInterval(intervalId);
-  }, [currentThreadId, checkForNewExtractions]);
+    socketClient.subscribeToThread(currentThreadId);
+    socketClient.subscribeToTheme(currentThemeId);
+    
+    // Listen for new extractions
+    const unsubscribeNew = socketClient.onNewExtraction((event) => {
+      const type = event.type;
+      const item = event.data;
+      
+      setNotification({
+        message: `ありがとうございます！新しい${type === 'problem' ? '課題' : '解決策'}「${
+          item.statement.substring(0, 30)
+        }${
+          item.statement.length > 30 ? "..." : ""
+        }」についてのあなたの声が追加されました。`,
+        type: type as "problem" | "solution",
+        id: item._id,
+      });
+      
+      // Update previous extractions state
+      if (type === 'problem') {
+        setPreviousExtractions(prev => ({
+          ...prev,
+          problems: [...prev.problems, item as Problem]
+        }));
+      } else if (type === 'solution') {
+        setPreviousExtractions(prev => ({
+          ...prev,
+          solutions: [...prev.solutions, item as Solution]
+        }));
+      }
+    });
+    
+    const unsubscribeUpdate = socketClient.onExtractionUpdate((event) => {
+      const type = event.type;
+      const item = event.data;
+      
+      setNotification({
+        message: `ありがとうございます！${type === 'problem' ? '課題' : '解決策'}「${
+          item.statement.substring(0, 30)
+        }${
+          item.statement.length > 30 ? "..." : ""
+        }」についてのあなたの声が更新されました。`,
+        type: type as "problem" | "solution",
+        id: item._id,
+      });
+      
+      // Update previous extractions state
+      if (type === 'problem') {
+        setPreviousExtractions(prev => ({
+          ...prev,
+          problems: prev.problems.map(p => p._id === item._id ? item as Problem : p)
+        }));
+      } else if (type === 'solution') {
+        setPreviousExtractions(prev => ({
+          ...prev,
+          solutions: prev.solutions.map(s => s._id === item._id ? item as Solution : s)
+        }));
+      }
+    });
+    
+    // Clean up subscriptions when component unmounts or threadId changes
+    return () => {
+      socketClient.unsubscribeFromThread(currentThreadId);
+      socketClient.unsubscribeFromTheme(currentThemeId);
+      unsubscribeNew();
+      unsubscribeUpdate();
+    };
+  }, [currentThreadId, currentThemeId, setNotification, checkForNewExtractions]);
 
   // Load thread messages when component mounts or currentThreadId changes
   useEffect(() => {

@@ -223,6 +223,13 @@ async function saveAndLinkItem(
     console.log(
       `[ExtractionWorker] Added Problem: ${savedItem._id} from ${sourceType} ${sourceOriginId} for theme ${themeId}`
     );
+    
+    if (savedItem && job && job.app) {
+      const extractionNotificationService = job.app.get('extractionNotificationService');
+      if (extractionNotificationService) {
+        extractionNotificationService.notifyNewProblem(savedItem, themeId, sourceOriginId);
+      }
+    }
   } else if (itemData.type === "solution") {
     const newSolution = new Solution({
       statement: itemData.statement,
@@ -236,6 +243,13 @@ async function saveAndLinkItem(
     console.log(
       `[ExtractionWorker] Added Solution: ${savedItem._id} from ${sourceType} ${sourceOriginId} for theme ${themeId}`
     );
+    
+    if (savedItem && job && job.app) {
+      const extractionNotificationService = job.app.get('extractionNotificationService');
+      if (extractionNotificationService) {
+        extractionNotificationService.notifySolution(savedItem, themeId, sourceOriginId);
+      }
+    }
   }
 
   if (savedItem) {
