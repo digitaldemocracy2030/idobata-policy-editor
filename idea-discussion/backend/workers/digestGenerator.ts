@@ -1,16 +1,16 @@
+import { Types } from "mongoose";
 import DigestDraft from "../models/DigestDraft.js";
 import PolicyDraft from "../models/PolicyDraft.js";
 import Problem from "../models/Problem.js";
 import QuestionLink from "../models/QuestionLink.js";
 import SharpQuestion from "../models/SharpQuestion.js";
 import Solution from "../models/Solution.js";
-import { callLLM, ChatMessage } from "../services/llmService.js";
-import { Types } from "mongoose";
+import { ChatMessage, callLLM } from "../services/llmService.js";
 
 interface DigestResponse {
   title: string;
   content: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 async function generateDigestDraft(questionId: string): Promise<void> {

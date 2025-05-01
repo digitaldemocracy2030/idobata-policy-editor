@@ -1,10 +1,11 @@
+import { Types } from "mongoose";
 import ChatThread from "../models/ChatThread.js";
 import ImportedItem from "../models/ImportedItem.js";
 import Problem from "../models/Problem.js";
 import Solution from "../models/Solution.js";
-import { callLLM, ChatMessage } from "../services/llmService.js";
+import { ChatMessage, callLLM } from "../services/llmService.js";
+import { IProblem, ISolution } from "../types/index.js";
 import { linkItemToQuestions } from "./linkingWorker.js";
-import { Types } from "mongoose";
 
 interface ExtractionData {
   messages?: Array<{
@@ -12,8 +13,8 @@ interface ExtractionData {
     content: string;
     timestamp?: Date;
   }>;
-  existingProblems?: any[];
-  existingSolutions?: any[];
+  existingProblems?: IProblem[];
+  existingSolutions?: ISolution[];
   content?: string;
 }
 
@@ -70,13 +71,13 @@ function buildExtractionPrompt(
     const existingProblemSummary =
       existingProblems.length > 0
         ? existingProblems
-            .map((p) => `- ID: ${p._id}, Statement: ${p.statement}`)
+            .map((p) => `- ID: ${p._id}, Statement: ${p.content}`)
             .join("\n")
         : "None";
     const existingSolutionSummary =
       existingSolutions.length > 0
         ? existingSolutions
-            .map((s) => `- ID: ${s._id}, Statement: ${s.statement}`)
+            .map((s) => `- ID: ${s._id}, Statement: ${s.content}`)
             .join("\n")
         : "None";
 

@@ -43,6 +43,8 @@ export interface IChatThread extends BaseDocument {
   messages: IChatMessage[];
   userId?: string;
   sessionId: string;
+  extractedProblemIds?: Types.ObjectId[];
+  extractedSolutionIds?: Types.ObjectId[];
 }
 
 export interface IQuestionLink extends BaseDocument {
