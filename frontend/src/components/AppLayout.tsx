@@ -8,7 +8,7 @@ import type {
   OutletContext,
   PreviousExtractions,
   Problem,
-  Solution
+  Solution,
 } from "../types";
 import ChatHistory from "./ChatHistory";
 import ChatInput from "./ChatInput";
@@ -236,9 +236,10 @@ function AppLayout() {
       const item = event.data;
       
       setNotification({
-        message: `ありがとうございます！新しい${type === 'problem' ? '課題' : '解決策'}「${
-          item.statement.substring(0, 30)
-        }${
+        message: `ありがとうございます！新しい${type === "problem" ? "課題" : "解決策"}「${item.statement.substring(
+          0,
+          30
+        )}${
           item.statement.length > 30 ? "..." : ""
         }」についてのあなたの声が追加されました。`,
         type: type as "problem" | "solution",
@@ -246,15 +247,15 @@ function AppLayout() {
       });
       
       // Update previous extractions state
-      if (type === 'problem') {
-        setPreviousExtractions(prev => ({
+      if (type === "problem") {
+        setPreviousExtractions((prev) => ({
           ...prev,
-          problems: [...prev.problems, item as Problem]
+          problems: [...prev.problems, item as Problem],
         }));
-      } else if (type === 'solution') {
-        setPreviousExtractions(prev => ({
+      } else if (type === "solution") {
+        setPreviousExtractions((prev) => ({
           ...prev,
-          solutions: [...prev.solutions, item as Solution]
+          solutions: [...prev.solutions, item as Solution],
         }));
       }
     });
@@ -264,9 +265,10 @@ function AppLayout() {
       const item = event.data;
       
       setNotification({
-        message: `ありがとうございます！${type === 'problem' ? '課題' : '解決策'}「${
-          item.statement.substring(0, 30)
-        }${
+        message: `ありがとうございます！${type === "problem" ? "課題" : "解決策"}「${item.statement.substring(
+          0,
+          30
+        )}${
           item.statement.length > 30 ? "..." : ""
         }」についてのあなたの声が更新されました。`,
         type: type as "problem" | "solution",
@@ -274,15 +276,19 @@ function AppLayout() {
       });
       
       // Update previous extractions state
-      if (type === 'problem') {
-        setPreviousExtractions(prev => ({
+      if (type === "problem") {
+        setPreviousExtractions((prev) => ({
           ...prev,
-          problems: prev.problems.map(p => p._id === item._id ? item as Problem : p)
+          problems: prev.problems.map((p) =>
+            p._id === item._id ? (item as Problem) : p
+          ),
         }));
-      } else if (type === 'solution') {
-        setPreviousExtractions(prev => ({
+      } else if (type === "solution") {
+        setPreviousExtractions((prev) => ({
           ...prev,
-          solutions: prev.solutions.map(s => s._id === item._id ? item as Solution : s)
+          solutions: prev.solutions.map((s) =>
+            s._id === item._id ? (item as Solution) : s
+          ),
         }));
       }
     });

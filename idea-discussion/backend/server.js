@@ -138,10 +138,14 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || process.env.IDEA_CORS_ORIGIN?.split(",") || ["http://localhost:5173", "http://localhost:5175"],
+    origin: process.env.FRONTEND_URL ||
+      process.env.IDEA_CORS_ORIGIN?.split(",") || [
+        "http://localhost:5173",
+        "http://localhost:5175",
+      ],
     methods: ["GET", "POST"],
-    credentials: true
-  }
+    credentials: true,
+  },
 });
 
 io.on("connection", (socket) => {

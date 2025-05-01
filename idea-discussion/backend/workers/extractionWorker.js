@@ -223,7 +223,7 @@ async function saveAndLinkItem(
     console.log(
       `[ExtractionWorker] Added Problem: ${savedItem._id} from ${sourceType} ${sourceOriginId} for theme ${themeId}`
     );
-    
+
     if (savedItem && job && job.app) {
       const extractionNotificationService = job.app.get(
         "extractionNotificationService"
@@ -249,7 +249,7 @@ async function saveAndLinkItem(
     console.log(
       `[ExtractionWorker] Added Solution: ${savedItem._id} from ${sourceType} ${sourceOriginId} for theme ${themeId}`
     );
-    
+
     if (savedItem && job && job.app) {
       const extractionNotificationService = job.app.get(
         "extractionNotificationService"
