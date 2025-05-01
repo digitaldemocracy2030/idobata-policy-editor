@@ -225,9 +225,15 @@ async function saveAndLinkItem(
     );
     
     if (savedItem && job && job.app) {
-      const extractionNotificationService = job.app.get('extractionNotificationService');
+      const extractionNotificationService = job.app.get(
+        "extractionNotificationService"
+      );
       if (extractionNotificationService) {
-        extractionNotificationService.notifyNewProblem(savedItem, themeId, sourceOriginId);
+        extractionNotificationService.notifyNewProblem(
+          savedItem,
+          themeId,
+          sourceOriginId
+        );
       }
     }
   } else if (itemData.type === "solution") {
@@ -245,9 +251,15 @@ async function saveAndLinkItem(
     );
     
     if (savedItem && job && job.app) {
-      const extractionNotificationService = job.app.get('extractionNotificationService');
+      const extractionNotificationService = job.app.get(
+        "extractionNotificationService"
+      );
       if (extractionNotificationService) {
-        extractionNotificationService.notifySolution(savedItem, themeId, sourceOriginId);
+        extractionNotificationService.notifySolution(
+          savedItem,
+          themeId,
+          sourceOriginId
+        );
       }
     }
   }

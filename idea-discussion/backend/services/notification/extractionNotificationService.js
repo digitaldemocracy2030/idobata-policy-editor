@@ -16,20 +16,20 @@ class ExtractionNotificationService {
   notifyNewProblem(problem, themeId, threadId) {
     if (themeId) {
       const room = `theme:${themeId}`;
-      this.io.to(room).emit('new-extraction', {
-        type: 'problem',
-        data: problem
+      this.io.to(room).emit("new-extraction", {
+        type: "problem",
+        data: problem,
       });
-      this._logEvent('new-extraction', { type: 'problem', data: problem }, room);
+      this._logEvent("new-extraction", { type: "problem", data: problem }, room);
     }
     
     if (threadId) {
       const room = `thread:${threadId}`;
-      this.io.to(room).emit('new-extraction', {
-        type: 'problem',
-        data: problem
+      this.io.to(room).emit("new-extraction", {
+        type: "problem",
+        data: problem,
       });
-      this._logEvent('new-extraction', { type: 'problem', data: problem }, room);
+      this._logEvent("new-extraction", { type: "problem", data: problem }, room);
     }
   }
 
@@ -42,20 +42,20 @@ class ExtractionNotificationService {
   notifySolution(solution, themeId, threadId) {
     if (themeId) {
       const room = `theme:${themeId}`;
-      this.io.to(room).emit('new-extraction', {
-        type: 'solution',
-        data: solution
+      this.io.to(room).emit("new-extraction", {
+        type: "solution",
+        data: solution,
       });
-      this._logEvent('new-extraction', { type: 'solution', data: solution }, room);
+      this._logEvent("new-extraction", { type: "solution", data: solution }, room);
     }
     
     if (threadId) {
       const room = `thread:${threadId}`;
-      this.io.to(room).emit('new-extraction', {
-        type: 'solution',
-        data: solution
+      this.io.to(room).emit("new-extraction", {
+        type: "solution",
+        data: solution,
       });
-      this._logEvent('new-extraction', { type: 'solution', data: solution }, room);
+      this._logEvent("new-extraction", { type: "solution", data: solution }, room);
     }
   }
 
@@ -69,20 +69,20 @@ class ExtractionNotificationService {
   notifyExtractionUpdate(type, data, themeId, threadId) {
     if (themeId) {
       const room = `theme:${themeId}`;
-      this.io.to(room).emit('extraction-update', {
+      this.io.to(room).emit("extraction-update", {
         type,
-        data
+        data,
       });
-      this._logEvent('extraction-update', { type, data }, room);
+      this._logEvent("extraction-update", { type, data }, room);
     }
     
     if (threadId) {
       const room = `thread:${threadId}`;
-      this.io.to(room).emit('extraction-update', {
+      this.io.to(room).emit("extraction-update", {
         type,
-        data
+        data,
       });
-      this._logEvent('extraction-update', { type, data }, room);
+      this._logEvent("extraction-update", { type, data }, room);
     }
   }
 
@@ -94,11 +94,12 @@ class ExtractionNotificationService {
    * @param {string} room - 送信先のルーム
    */
   _logEvent(event, data, room) {
-    console.log(`[WebSocket] Emitting '${event}' to ${room}:`, 
+    console.log(
+      `[WebSocket] Emitting '${event}' to ${room}:`,
       JSON.stringify({
         type: data.type,
         id: data.data._id,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       })
     );
   }
