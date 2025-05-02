@@ -14,7 +14,9 @@ import Notification from "./Notification";
 import ThreadExtractions from "./ThreadExtractions";
 
 function AppLayout() {
-  const { userId, setUserId } = useOutletContext<OutletContext>();
+  const contextValue = useOutletContext<OutletContext | undefined>();
+  const userId = contextValue?.userId ?? null;
+  const setUserId = contextValue?.setUserId ?? (() => {});
 
   // Initialize currentThreadId from localStorage if available
   const [messages, setMessages] = useState<Message[]>([]);
