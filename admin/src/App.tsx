@@ -7,6 +7,7 @@ import Sidebar from "./components/layout/Sidebar";
 import { AuthProvider } from "./contexts/AuthContext";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import SiteConfigEdit from "./pages/SiteConfigEdit";
 import ThemeClustering from "./pages/ThemeClustering";
 import ThemeCreate from "./pages/ThemeCreate";
@@ -21,6 +22,7 @@ const App: React.FC = () => {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route
             path="/*"
             element={

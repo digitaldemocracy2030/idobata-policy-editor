@@ -147,6 +147,19 @@ export class ApiClient {
     });
   }
 
+  async getAdminCount(): Promise<ApiResult<{ adminCount: number }>> {
+    return this.request<{ adminCount: number }>("/auth/count");
+  }
+
+  async initializeAdmin(
+    userData: CreateUserPayload
+  ): Promise<ApiResult<UserResponse>> {
+    return this.request<UserResponse>("/auth/initialize", {
+      method: "POST",
+      body: JSON.stringify(userData),
+    });
+  }
+
   async getSiteConfig(): Promise<ApiResult<SiteConfig>> {
     return this.request<SiteConfig>("/site-config");
   }

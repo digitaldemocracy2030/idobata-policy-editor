@@ -141,4 +141,14 @@ const createAdminUser = async (req, res) => {
   }
 };
 
-export { login, getCurrentUser, createAdminUser, initializeAdminUser };
+const getAdminCount = async (req, res) => {
+  try {
+    const adminCount = await AdminUser.countDocuments();
+    res.json({ adminCount });
+  } catch (error) {
+    console.error("[AuthController] Get admin count error:", error);
+    res.status(500).json({ message: "サーバーエラーが発生しました" });
+  }
+};
+
+export { login, getCurrentUser, createAdminUser, initializeAdminUser, getAdminCount };

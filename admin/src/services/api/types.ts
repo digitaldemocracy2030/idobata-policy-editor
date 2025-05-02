@@ -137,3 +137,7 @@ export interface Problem {
 export interface QuestionWithProblems extends Question {
   relatedProblems?: Problem[];
 }
+
+export interface AdminCountResponse {
+  adminCount: number;
+}
