@@ -1,7 +1,6 @@
 import { Navigate, Outlet, createBrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "./ThemeContext";
 import AppLayout from "./components/AppLayout";
-import LegacyWrapper from "./components/LegacyWrapper";
 import PageLayout from "./components/layout/PageLayout";
 import { AuthProvider } from "./contexts/AuthContext";
 import About from "./pages/About";
@@ -32,15 +31,10 @@ export const router = createBrowserRouter([
       { index: true, element: <Navigate to="/top" replace /> },
       {
         path: "legacy",
-        element: <LegacyWrapper />,
+        element: <AppLayout />,
         children: [
-          {
-            element: <AppLayout />,
-            children: [
-              { index: true, element: <MainPage /> },
-              { path: "data", element: <DataPage /> },
-            ],
-          },
+          { index: true, element: <MainPage /> },
+          { path: "data", element: <DataPage /> },
           { path: "*", element: <Navigate to="/old" replace /> },
         ],
       },

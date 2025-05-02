@@ -1,4 +1,3 @@
-import * as React from "react";
 import DataPage from "../pages/DataPage";
 
 /**
