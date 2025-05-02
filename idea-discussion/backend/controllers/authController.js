@@ -6,7 +6,9 @@ const initializeAdminUser = async (req, res) => {
     const adminCount = await AdminUser.countDocuments();
 
     if (adminCount > 0) {
-      console.warn("[AuthController] 管理者が既に存在する状態で初期化が試行されました");
+      console.warn(
+        "[AuthController] 管理者が既に存在する状態で初期化が試行されました"
+      );
       return res.status(403).json({
         message: "管理者ユーザーは既に初期化されています",
       });
@@ -51,10 +53,14 @@ const initializeAdminUser = async (req, res) => {
 
     const newAdminCount = await AdminUser.countDocuments();
     if (newAdminCount > 1) {
-      console.warn("[AuthController] 競合状態が検出されました: 複数の管理者が同時に作成された可能性があります");
+      console.warn(
+        "[AuthController] 競合状態が検出されました: 複数の管理者が同時に作成された可能性があります"
+      );
     }
 
-    console.info(`[AuthController] 初期管理者ユーザーが作成されました: ${email}`);
+    console.info(
+      `[AuthController] 初期管理者ユーザーが作成されました: ${email}`
+    );
     res.status(201).json({
       message: "初期管理者ユーザーが正常に作成されました",
       user: {
