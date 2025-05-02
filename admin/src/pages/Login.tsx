@@ -36,7 +36,7 @@ const Login: React.FC = () => {
   if (isAuthenticated) {
     return <Navigate to="/" />;
   }
-  
+
   if (!isCheckingAdmin && !adminExists) {
     return <Navigate to="/register" />;
   }
