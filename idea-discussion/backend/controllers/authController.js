@@ -151,4 +151,10 @@ const getAdminCount = async (req, res) => {
   }
 };
 
-export { login, getCurrentUser, createAdminUser, initializeAdminUser, getAdminCount };
+export {
+  login,
+  getCurrentUser,
+  createAdminUser,
+  initializeAdminUser,
+  getAdminCount,
+};

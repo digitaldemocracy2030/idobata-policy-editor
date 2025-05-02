@@ -1,8 +1,8 @@
 import express from "express";
 import {
   createAdminUser,
-  getCurrentUser,
   getAdminCount,
+  getCurrentUser,
   initializeAdminUser,
   login,
 } from "../controllers/authController.js";

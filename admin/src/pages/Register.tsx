@@ -87,7 +87,7 @@ const Register: React.FC = () => {
           navigate("/login");
         }
       } else {
-        setError("管理者ユーザーの作成に失敗しました: " + result.error.message);
+        setError(`管理者ユーザーの作成に失敗しました: ${result.error.message}`);
       }
     } catch (err) {
       setError("管理者ユーザーの作成中にエラーが発生しました");
@@ -112,7 +112,9 @@ const Register: React.FC = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900">初期管理者ユーザー登録</h1>
+          <h1 className="text-2xl font-bold text-gray-900">
+            初期管理者ユーザー登録
+          </h1>
           <p className="mt-2 text-gray-600">
             いどばたの管理画面を使用するための初期管理者ユーザーを作成してください
           </p>
