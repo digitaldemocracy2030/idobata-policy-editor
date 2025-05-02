@@ -86,7 +86,7 @@ async function generatePolicyDraft(questionId) {
           text: problem.statement,
           topicId: themeId.toString(),
           questionId: questionId,
-          itemType: "problem"
+          itemType: "problem",
         });
       }
     }
@@ -98,13 +98,15 @@ async function generatePolicyDraft(questionId) {
           text: solution.statement,
           topicId: themeId.toString(),
           questionId: questionId,
-          itemType: "solution"
+          itemType: "solution",
         });
       }
     }
 
     if (itemsToEmbed.length > 0) {
-      console.log(`[PolicyGenerator] Generating embeddings for ${itemsToEmbed.length} items`);
+      console.log(
+        `[PolicyGenerator] Generating embeddings for ${itemsToEmbed.length} items`
+      );
       try {
         await generateEmbeddings(itemsToEmbed);
         
@@ -130,21 +132,28 @@ async function generatePolicyDraft(questionId) {
           );
         }
         
-        console.log(`[PolicyGenerator] Successfully generated embeddings`);
+        console.log(
+          `[PolicyGenerator] Successfully generated embeddings`
+        );
       } catch (error) {
-        console.error(`[PolicyGenerator] Error generating embeddings:`, error);
+        console.error(
+          `[PolicyGenerator] Error generating embeddings:`,
+          error
+        );
       }
     }
 
     let problemClusterResult;
     let orderedProblemIds = [];
     try {
-      console.log(`[PolicyGenerator] Performing hierarchical clustering for problems`);
+      console.log(
+        `[PolicyGenerator] Performing hierarchical clustering for problems`
+      );
       problemClusterResult = await clusterVectors(
         {
           topicId: themeId.toString(),
           questionId: questionId,
-          itemType: "problem"
+          itemType: "problem",
         },
         "hierarchical",
         {}
@@ -156,7 +165,9 @@ async function generatePolicyDraft(questionId) {
           if (!node) return { totalScore: 0, count: 0 };
           
           if (node.is_leaf) {
-            const score = node.item_id ? (relevanceScoreMap.get(node.item_id.toString()) || 0) : 0;
+            const score = node.item_id
+              ? relevanceScoreMap.get(node.item_id.toString()) || 0
+              : 0;
             return { totalScore: score, count: 1 };
           } else {
             let totalScore = 0;
@@ -164,7 +175,10 @@ async function generatePolicyDraft(questionId) {
             
             if (node.children && Array.isArray(node.children)) {
               for (const child of node.children) {
-                const childResult = calculateAverageRelevance(child, relevanceScoreMap);
+                const childResult = calculateAverageRelevance(
+                  child,
+                  relevanceScoreMap
+                );
                 totalScore += childResult.totalScore;
                 count += childResult.count;
               }
@@ -177,13 +191,20 @@ async function generatePolicyDraft(questionId) {
         function sortTreeByRelevance(node, relevanceScoreMap) {
           if (!node) return;
           
-          if (!node.is_leaf && node.children && Array.isArray(node.children) && node.children.length > 0) {
+          if (
+            !node.is_leaf &&
+            node.children &&
+            Array.isArray(node.children) &&
+            node.children.length > 0
+          ) {
             node.children.sort((a, b) => {
               const aResult = calculateAverageRelevance(a, relevanceScoreMap);
               const bResult = calculateAverageRelevance(b, relevanceScoreMap);
               
-              const aAvg = aResult.count > 0 ? aResult.totalScore / aResult.count : 0;
-              const bAvg = bResult.count > 0 ? bResult.totalScore / bResult.count : 0;
+              const aAvg =
+                aResult.count > 0 ? aResult.totalScore / aResult.count : 0;
+              const bAvg =
+                bResult.count > 0 ? bResult.totalScore / bResult.count : 0;
               
               return bAvg - aAvg; // 降順
             });
@@ -197,22 +218,29 @@ async function generatePolicyDraft(questionId) {
         sortTreeByRelevance(problemClusterResult.clusters, relevanceScoreMap);
         
         orderedProblemIds = extractOrderedIdsFromTree(problemClusterResult.clusters);
-        console.log(`[PolicyGenerator] Extracted ${orderedProblemIds.length} ordered problem IDs from clusters`);
+        console.log(
+          `[PolicyGenerator] Extracted ${orderedProblemIds.length} ordered problem IDs from clusters`
+        );
       }
     } catch (error) {
-      console.error(`[PolicyGenerator] Error clustering problems:`, error);
+      console.error(
+        `[PolicyGenerator] Error clustering problems:`,
+        error
+      );
       throw new Error(`Failed to cluster problems: ${error.message}`);
     }
 
     let solutionClusterResult;
     let orderedSolutionIds = [];
     try {
-      console.log(`[PolicyGenerator] Performing hierarchical clustering for solutions`);
+      console.log(
+        `[PolicyGenerator] Performing hierarchical clustering for solutions`
+      );
       solutionClusterResult = await clusterVectors(
         {
           topicId: themeId.toString(),
           questionId: questionId,
-          itemType: "solution"
+          itemType: "solution",
         },
         "hierarchical",
         {}
@@ -225,10 +253,15 @@ async function generatePolicyDraft(questionId) {
         
         // Extract ordered IDs from the sorted tree
         orderedSolutionIds = extractOrderedIdsFromTree(solutionClusterResult.clusters);
-        console.log(`[PolicyGenerator] Extracted ${orderedSolutionIds.length} ordered solution IDs from clusters`);
+        console.log(
+          `[PolicyGenerator] Extracted ${orderedSolutionIds.length} ordered solution IDs from clusters`
+        );
       }
     } catch (error) {
-      console.error(`[PolicyGenerator] Error clustering solutions:`, error);
+      console.error(
+        `[PolicyGenerator] Error clustering solutions:`,
+        error
+      );
       throw new Error(`Failed to cluster solutions: ${error.message}`);
     }
 
@@ -257,7 +290,9 @@ async function generatePolicyDraft(questionId) {
     }
     
     if (orderedProblemStatements.length === 0 && problems.length > 0) {
-      console.log(`[PolicyGenerator] Falling back to relevance score ordering for problems`);
+      console.log(
+        `[PolicyGenerator] Falling back to relevance score ordering for problems`
+      );
       // Sort problems and solutions according to the order of IDs (which are already sorted by relevanceScore)
       const sortedProblems = problemIds
         .map((id) => problems.find((p) => p._id.toString() === id.toString()))
@@ -267,7 +302,9 @@ async function generatePolicyDraft(questionId) {
     }
     
     if (orderedSolutionStatements.length === 0 && solutions.length > 0) {
-      console.log(`[PolicyGenerator] Falling back to relevance score ordering for solutions`);
+      console.log(
+        `[PolicyGenerator] Falling back to relevance score ordering for solutions`
+      );
       const sortedSolutions = solutionIds
         .map((id) => solutions.find((s) => s._id.toString() === id.toString()))
         .filter(Boolean); // Remove any undefined values
@@ -323,7 +360,9 @@ Please provide the output as a JSON object with "title" and "content" keys. When
       },
     ];
 
-    console.log("[PolicyGenerator] Calling LLM to generate policy draft...");
+    console.log(
+      "[PolicyGenerator] Calling LLM to generate policy draft..."
+    );
     const llmResponse = await callLLM(
       messages,
       true,
