@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { apiClient } from "../../services/api/apiClient";
 import { FloatingChat, type FloatingChatRef } from "../chat/FloatingChat";
 import BreadcrumbView from "../common/BreadcrumbView";
+import SectionTitle from "../home/SectionTitle";
 import CommentCard from "./CommentCard";
 import KeyQuestionCard from "./KeyQuestionCard";
 
@@ -97,9 +98,7 @@ const ThemeDetailTemplate = ({
       <p className="text-sm text-neutral-600 mb-8">{theme.description}</p>
 
       <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-4">
-          キークエスチョン ({keyQuestions.length})
-        </h2>
+        <SectionTitle title={`キークエスチョン (${keyQuestions.length})`} />
         <div className="space-y-4">
           {keyQuestions.map((question) => (
             <KeyQuestionCard
@@ -116,7 +115,7 @@ const ThemeDetailTemplate = ({
       </div>
 
       <div className="mb-12">
-        <h2 className="text-xl font-semibold mb-4">寄せられた意見</h2>
+        <SectionTitle title="寄せられた意見" />
 
         <div className="flex border-b border-neutral-200 mb-4">
           <button
