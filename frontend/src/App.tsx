@@ -1,8 +1,8 @@
 import { Navigate, Outlet, createBrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "./ThemeContext";
-import LegacyWrapper from "./components/LegacyWrapper";
-import LegacyMainPage from "./components/LegacyMainPage";
 import LegacyDataPage from "./components/LegacyDataPage";
+import LegacyMainPage from "./components/LegacyMainPage";
+import LegacyWrapper from "./components/LegacyWrapper";
 import PageLayout from "./components/layout/PageLayout";
 import { AuthProvider } from "./contexts/AuthContext";
 import About from "./pages/About";
@@ -16,7 +16,6 @@ import Top from "./pages/Top";
 function App() {
   return <Outlet />;
 }
-
 
 export const router = createBrowserRouter([
   {
