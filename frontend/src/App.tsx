@@ -1,7 +1,8 @@
 import { Navigate, Outlet, createBrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "./ThemeContext";
-import LegacyDataPage from "./components/LegacyDataPage";
-import LegacyMainPage from "./components/LegacyMainPage";
+import AppLayout from "./components/AppLayout";
+import MainPage from "./pages/MainPage";
+import DataPage from "./pages/DataPage";
 import LegacyWrapper from "./components/LegacyWrapper";
 import PageLayout from "./components/layout/PageLayout";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -33,8 +34,13 @@ export const router = createBrowserRouter([
         path: "legacy",
         element: <LegacyWrapper />,
         children: [
-          { index: true, element: <LegacyMainPage /> },
-          { path: "data", element: <LegacyDataPage /> },
+          { 
+            element: <AppLayout />,
+            children: [
+              { index: true, element: <MainPage /> },
+              { path: "data", element: <DataPage /> },
+            ],
+          },
           { path: "*", element: <Navigate to="/old" replace /> },
         ],
       },
