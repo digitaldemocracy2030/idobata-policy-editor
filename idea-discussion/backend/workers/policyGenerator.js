@@ -32,18 +32,18 @@ function extractOrderedIdsFromTree(node) {
 
 async function generatePolicyDraft(questionId) {
   console.log(
-    `[PolicyGenerator] Starting policy draft generation for questionId: ${questionId}`
+    "[PolicyGenerator] Starting policy draft generation for questionId: " + questionId
   );
   try {
     // 1. Fetch the SharpQuestion
     const question = await SharpQuestion.findById(questionId);
     if (!question) {
       console.error(
-        `[PolicyGenerator] SharpQuestion not found for id: ${questionId}`
+        "[PolicyGenerator] SharpQuestion not found for id: " + questionId
       );
       return;
     }
-    console.log(`[PolicyGenerator] Found question: "${question.questionText}"`);
+    console.log("[PolicyGenerator] Found question: \"" + question.questionText + "\"");
     
     // Extract themeId from question
     const themeId = question.themeId;
@@ -105,7 +105,7 @@ async function generatePolicyDraft(questionId) {
 
     if (itemsToEmbed.length > 0) {
       console.log(
-        `[PolicyGenerator] Generating embeddings for ${itemsToEmbed.length} items`
+        "[PolicyGenerator] Generating embeddings for " + itemsToEmbed.length + " items"
       );
       try {
         await generateEmbeddings(itemsToEmbed);
@@ -133,11 +133,11 @@ async function generatePolicyDraft(questionId) {
         }
         
         console.log(
-          `[PolicyGenerator] Successfully generated embeddings`
+          "[PolicyGenerator] Successfully generated embeddings"
         );
       } catch (error) {
         console.error(
-          `[PolicyGenerator] Error generating embeddings:`,
+          "[PolicyGenerator] Error generating embeddings:",
           error
         );
       }
@@ -147,7 +147,7 @@ async function generatePolicyDraft(questionId) {
     let orderedProblemIds = [];
     try {
       console.log(
-        `[PolicyGenerator] Performing hierarchical clustering for problems`
+        "[PolicyGenerator] Performing hierarchical clustering for problems"
       );
       problemClusterResult = await clusterVectors(
         {
@@ -160,7 +160,7 @@ async function generatePolicyDraft(questionId) {
       );
       
       // 5. Sort the tree by relevance scores
-      if (problemClusterResult && problemClusterResult.clusters) {
+      if (problemClusterResult?.clusters) {
         function calculateAverageRelevance(node, relevanceScoreMap) {
           if (!node) return { totalScore: 0, count: 0 };
           
@@ -169,11 +169,12 @@ async function generatePolicyDraft(questionId) {
               ? relevanceScoreMap.get(node.item_id.toString()) || 0
               : 0;
             return { totalScore: score, count: 1 };
-          } else {
-            let totalScore = 0;
-            let count = 0;
-            
-            if (node.children && Array.isArray(node.children)) {
+          }
+          
+          let totalScore = 0;
+          let count = 0;
+          
+          if (node.children && Array.isArray(node.children)) {
               for (const child of node.children) {
                 const childResult = calculateAverageRelevance(
                   child,
@@ -186,7 +187,6 @@ async function generatePolicyDraft(questionId) {
             
             return { totalScore, count };
           }
-        }
         
         function sortTreeByRelevance(node, relevanceScoreMap) {
           if (!node) return;
@@ -219,22 +219,22 @@ async function generatePolicyDraft(questionId) {
         
         orderedProblemIds = extractOrderedIdsFromTree(problemClusterResult.clusters);
         console.log(
-          `[PolicyGenerator] Extracted ${orderedProblemIds.length} ordered problem IDs from clusters`
+          "[PolicyGenerator] Extracted " + orderedProblemIds.length + " ordered problem IDs from clusters"
         );
       }
     } catch (error) {
       console.error(
-        `[PolicyGenerator] Error clustering problems:`,
+        "[PolicyGenerator] Error clustering problems:",
         error
       );
-      throw new Error(`Failed to cluster problems: ${error.message}`);
+      throw new Error("Failed to cluster problems: " + error.message);
     }
 
     let solutionClusterResult;
     let orderedSolutionIds = [];
     try {
       console.log(
-        `[PolicyGenerator] Performing hierarchical clustering for solutions`
+        "[PolicyGenerator] Performing hierarchical clustering for solutions"
       );
       solutionClusterResult = await clusterVectors(
         {
@@ -247,22 +247,22 @@ async function generatePolicyDraft(questionId) {
       );
       
       // Sort the tree by relevance scores
-      if (solutionClusterResult && solutionClusterResult.clusters) {
+      if (solutionClusterResult?.clusters) {
         
         sortTreeByRelevance(solutionClusterResult.clusters, relevanceScoreMap);
         
         // Extract ordered IDs from the sorted tree
         orderedSolutionIds = extractOrderedIdsFromTree(solutionClusterResult.clusters);
         console.log(
-          `[PolicyGenerator] Extracted ${orderedSolutionIds.length} ordered solution IDs from clusters`
+          "[PolicyGenerator] Extracted " + orderedSolutionIds.length + " ordered solution IDs from clusters"
         );
       }
     } catch (error) {
       console.error(
-        `[PolicyGenerator] Error clustering solutions:`,
+        "[PolicyGenerator] Error clustering solutions:",
         error
       );
-      throw new Error(`Failed to cluster solutions: ${error.message}`);
+      throw new Error("Failed to cluster solutions: " + error.message);
     }
 
     // Create ordered statements based on the ordered IDs
@@ -291,7 +291,7 @@ async function generatePolicyDraft(questionId) {
     
     if (orderedProblemStatements.length === 0 && problems.length > 0) {
       console.log(
-        `[PolicyGenerator] Falling back to relevance score ordering for problems`
+        "[PolicyGenerator] Falling back to relevance score ordering for problems"
       );
       // Sort problems and solutions according to the order of IDs (which are already sorted by relevanceScore)
       const sortedProblems = problemIds
@@ -303,7 +303,7 @@ async function generatePolicyDraft(questionId) {
     
     if (orderedSolutionStatements.length === 0 && solutions.length > 0) {
       console.log(
-        `[PolicyGenerator] Falling back to relevance score ordering for solutions`
+        "[PolicyGenerator] Falling back to relevance score ordering for solutions"
       );
       const sortedSolutions = solutionIds
         .map((id) => solutions.find((s) => s._id.toString() === id.toString()))
@@ -313,50 +313,17 @@ async function generatePolicyDraft(questionId) {
     }
     
     console.log(
-      `[PolicyGenerator] Prepared ${orderedProblemStatements.length} related problems and ${orderedSolutionStatements.length} related solutions, ordered by hierarchical clustering.`
+      "[PolicyGenerator] Prepared " + orderedProblemStatements.length + " related problems and " + orderedSolutionStatements.length + " related solutions, ordered by hierarchical clustering."
     );
 
     const messages = [
       {
         role: "system",
-        content: `あなたはAIアシスタントです。中心的な問い（「私たちはどのようにして...できるか？」）、関連する問題点のリスト、そして市民からの意見を通じて特定された潜在的な解決策のリストに基づいて、政策文書を作成する任務を負っています。
-あなたの出力は、'content'フィールド内に明確に2つのパートで構成されなければなりません。
-
-Part 1: ビジョンレポート
-- 提供された問題点と解決策の意見を分析し、統合してください。
-- **現状認識**と**理想像**について、それぞれ**合意点**と**相違点**（トレードオフを含む）を整理してください。
-- このパートでは、**どのように解決するか（How）の話は含めず**、課題認識と理想像の明確化に焦点を当ててください。
-- 類似したアイデアやテーマをグループ化してください。
-- 考慮された問題点と解決策の意見の数を明確に述べてください。
-- できる限り具体性が高く、生の声（引用など）を取り入れてください。
-- 特定された合意点と相違点を反映し、市民から提起された主要な懸念事項と提案された理想像を要約してください。
-- このセクションは、現状と目指すべき理想像に関する市民の多様な視点（合意点、相違点、トレードオフ）を理解しようとする政策立案者にとって、情報価値の高いレポートとなるべきです。箇条書きではなく、しっかりとした文章で記述してください。
-- 目標文字数：約7000文字
-
-Part 2: 解決手段レポート
-- Part 1で整理された**合意できている理想像**に向けて、提供された解決策の意見を分析・整理してください。
-- 理想像を実現するための具体的な解決策を提案してください。
-- 類似したアイデアやテーマをグループ化してください。
-- 考慮された解決策の意見の数を明確に述べてください。
-- 提案が市民のフィードバックに基づいていることを示すために、市民の意見からの特定のテーマや提案の数を参照してください（例：「Yに関するM個の提案に基づいて...」）。
-- 現実的で具体的な初期草案を作成することに焦点を当ててください。異なる選択肢間のトレードオフも考慮に入れてください。
-- 箇条書きではなく、しっかりとした文章で記述してください。
-- 目標文字数：約7000文字
-
-応答は、"title"（文字列、文書全体に適したタイトル）と "content"（文字列、'ビジョンレポート'と'解決手段レポート'の両セクションを含み、Markdownヘッダー（例：## ビジョンレポート、## 解決手段レポート）などを使用して明確に区切られ、フォーマットされたもの）のキーを含むJSONオブジェクトのみで行ってください。JSON構造外に他のテキストや説明を含めないでください。`,
+        content: "あなたはAIアシスタントです。中心的な問い（「私たちはどのようにして...できるか？」）、関連する問題点のリスト、そして市民からの意見を通じて特定された潜在的な解決策のリストに基づいて、政策文書を作成する任務を負っています。\nあなたの出力は、'content'フィールド内に明確に2つのパートで構成されなければなりません。\n\nPart 1: ビジョンレポート\n- 提供された問題点と解決策の意見を分析し、統合してください。\n- **現状認識**と**理想像**について、それぞれ**合意点**と**相違点**（トレードオフを含む）を整理してください。\n- このパートでは、**どのように解決するか（How）の話は含めず**、課題認識と理想像の明確化に焦点を当ててください。\n- 類似したアイデアやテーマをグループ化してください。\n- 考慮された問題点と解決策の意見の数を明確に述べてください。\n- できる限り具体性が高く、生の声（引用など）を取り入れてください。\n- 特定された合意点と相違点を反映し、市民から提起された主要な懸念事項と提案された理想像を要約してください。\n- このセクションは、現状と目指すべき理想像に関する市民の多様な視点（合意点、相違点、トレードオフ）を理解しようとする政策立案者にとって、情報価値の高いレポートとなるべきです。箇条書きではなく、しっかりとした文章で記述してください。\n- 目標文字数：約7000文字\n\nPart 2: 解決手段レポート\n- Part 1で整理された**合意できている理想像**に向けて、提供された解決策の意見を分析・整理してください。\n- 理想像を実現するための具体的な解決策を提案してください。\n- 類似したアイデアやテーマをグループ化してください。\n- 考慮された解決策の意見の数を明確に述べてください。\n- 提案が市民のフィードバックに基づいていることを示すために、市民の意見からの特定のテーマや提案の数を参照してください（例：「Yに関するM個の提案に基づいて...」）。\n- 現実的で具体的な初期草案を作成することに焦点を当ててください。異なる選択肢間のトレードオフも考慮に入れてください。\n- 箇条書きではなく、しっかりとした文章で記述してください。\n- 目標文字数：約7000文字\n\n応答は、\"title\"（文字列、文書全体に適したタイトル）と \"content\"（文字列、'ビジョンレポート'と'解決手段レポート'の両セクションを含み、Markdownヘッダー（例：## ビジョンレポート、## 解決手段レポート）などを使用して明確に区切られ、フォーマットされたもの）のキーを含むJSONオブジェクトのみで行ってください。JSON構造外に他のテキストや説明を含めないでください。",
       },
       {
         role: "user",
-        content: `Generate a report for the following question:
-Question: ${question.questionText}
-
-Related Problems (ordered by hierarchical clustering - items are grouped by similarity):
-${orderedProblemStatements.length > 0 ? orderedProblemStatements.map((p) => `- ${p}`).join("\n") : "- None provided"}
-
-Related Solutions (ordered by hierarchical clustering - items are grouped by similarity):
-${orderedSolutionStatements.length > 0 ? orderedSolutionStatements.map((s) => `- ${s}`).join("\n") : "- None provided"}
-
-Please provide the output as a JSON object with "title" and "content" keys. When considering the problems and solutions, analyze the groupings that emerge from their order to identify common themes and patterns.`,
+        content: "Generate a report for the following question:\nQuestion: " + question.questionText + "\n\nRelated Problems (ordered by hierarchical clustering - items are grouped by similarity):\n" + (orderedProblemStatements.length > 0 ? orderedProblemStatements.map((p) => "- " + p).join("\n") : "- None provided") + "\n\nRelated Solutions (ordered by hierarchical clustering - items are grouped by similarity):\n" + (orderedSolutionStatements.length > 0 ? orderedSolutionStatements.map((s) => "- " + s).join("\n") : "- None provided") + "\n\nPlease provide the output as a JSON object with \"title\" and \"content\" keys. When considering the problems and solutions, analyze the groupings that emerge from their order to identify common themes and patterns.",
       },
     ];
 
@@ -385,7 +352,7 @@ Please provide the output as a JSON object with "title" and "content" keys. When
     }
 
     console.log(
-      `[PolicyGenerator] LLM generated draft titled: "${llmResponse.title}"`
+      "[PolicyGenerator] LLM generated draft titled: \"" + llmResponse.title + "\""
     );
 
     const newDraft = new PolicyDraft({
@@ -399,11 +366,11 @@ Please provide the output as a JSON object with "title" and "content" keys. When
 
     await newDraft.save();
     console.log(
-      `[PolicyGenerator] Successfully saved policy draft with ID: ${newDraft._id}`
+      "[PolicyGenerator] Successfully saved policy draft with ID: " + newDraft._id
     );
   } catch (error) {
     console.error(
-      `[PolicyGenerator] Error generating policy draft for questionId ${questionId}:`,
+      "[PolicyGenerator] Error generating policy draft for questionId " + questionId + ":",
       error
     );
     // Add more robust error handling/reporting if needed
