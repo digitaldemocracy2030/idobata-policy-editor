@@ -86,7 +86,7 @@ async function generatePolicyDraft(questionId) {
           text: problem.statement,
           topicId: themeId.toString(),
           questionId: questionId,
-          itemType: 'problem'
+          itemType: "problem"
         });
       }
     }
@@ -98,7 +98,7 @@ async function generatePolicyDraft(questionId) {
           text: solution.statement,
           topicId: themeId.toString(),
           questionId: questionId,
-          itemType: 'solution'
+          itemType: "solution"
         });
       }
     }
@@ -109,11 +109,11 @@ async function generatePolicyDraft(questionId) {
         await generateEmbeddings(itemsToEmbed);
         
         const problemIdsToUpdate = itemsToEmbed
-          .filter(item => item.itemType === 'problem')
+          .filter(item => item.itemType === "problem")
           .map(item => item.id);
         
         const solutionIdsToUpdate = itemsToEmbed
-          .filter(item => item.itemType === 'solution')
+          .filter(item => item.itemType === "solution")
           .map(item => item.id);
           
         if (problemIdsToUpdate.length > 0) {
@@ -144,9 +144,9 @@ async function generatePolicyDraft(questionId) {
         {
           topicId: themeId.toString(),
           questionId: questionId,
-          itemType: 'problem'
+          itemType: "problem"
         },
-        'hierarchical',
+        "hierarchical",
         {}
       );
       
@@ -212,9 +212,9 @@ async function generatePolicyDraft(questionId) {
         {
           topicId: themeId.toString(),
           questionId: questionId,
-          itemType: 'solution'
+          itemType: "solution"
         },
-        'hierarchical',
+        "hierarchical",
         {}
       );
       
