@@ -1,13 +1,12 @@
 import { Navigate, Outlet, createBrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "./ThemeContext";
 import AppLayout from "./components/AppLayout";
-import MainPage from "./pages/MainPage";
-import DataPage from "./pages/DataPage";
 import LegacyWrapper from "./components/LegacyWrapper";
 import PageLayout from "./components/layout/PageLayout";
 import { AuthProvider } from "./contexts/AuthContext";
 import About from "./pages/About";
 import CommentsPage from "./pages/CommentsPage";
+
 import MyPage from "./pages/MyPage";
 import QuestionDetail from "./pages/QuestionDetail";
 import ThemeDetail from "./pages/ThemeDetail";
@@ -34,13 +33,8 @@ export const router = createBrowserRouter([
         path: "legacy",
         element: <LegacyWrapper />,
         children: [
-          { 
-            element: <AppLayout />,
-            children: [
-              { index: true, element: <MainPage /> },
-              { path: "data", element: <DataPage /> },
-            ],
-          },
+          { index: true, element: <AppLayout /> },
+          { path: "data", element: <AppLayout /> },
           { path: "*", element: <Navigate to="/old" replace /> },
         ],
       },

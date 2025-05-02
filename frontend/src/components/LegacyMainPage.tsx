@@ -1,6 +1,6 @@
 import React from "react";
-import AppLayout from "./AppLayout";
 import MainPage from "../pages/MainPage";
+import AppLayout from "./AppLayout";
 
 /**
  * legacyルート用のMainPageラッパー

@@ -8,9 +8,7 @@ import { Outlet } from "react-router-dom";
 function LegacyWrapper() {
   const [userId, setUserId] = useState<string | null>(null);
 
-  return (
-    <Outlet context={{ userId, setUserId }} />
-  );
+  return <Outlet context={{ userId, setUserId }} />;
 }
 
 export default LegacyWrapper;
