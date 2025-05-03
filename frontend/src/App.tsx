@@ -3,7 +3,9 @@ import { ThemeProvider } from "./ThemeContext";
 import AppLayout from "./components/AppLayout";
 import PageLayout from "./components/layout/PageLayout";
 import { AuthProvider } from "./contexts/AuthContext";
+import { UnifiedAuthProvider } from "./contexts/UnifiedAuthContext";
 import { MockProvider } from "./contexts/MockContext";
+import GoogleCallback from "./pages/GoogleCallback";
 import About from "./pages/About";
 import CommentsPage from "./pages/CommentsPage";
 import DataPage from "./pages/DataPage";
@@ -23,11 +25,11 @@ export const router = createBrowserRouter([
     path: "/",
     element: (
       <ThemeProvider>
-        <AuthProvider>
+        <UnifiedAuthProvider>
           <MockProvider>
             <App />
           </MockProvider>
-        </AuthProvider>
+        </UnifiedAuthProvider>
       </ThemeProvider>
     ),
     children: [
@@ -96,6 +98,10 @@ export const router = createBrowserRouter([
             <MyPage />
           </PageLayout>
         ),
+      },
+      {
+        path: "auth/google/callback",
+        element: <GoogleCallback />,
       },
     ],
   },

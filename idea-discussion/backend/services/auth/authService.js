@@ -1,10 +1,12 @@
 import jwt from "jsonwebtoken";
 import LocalAuthProvider from "./localAuthProvider.js";
+import GoogleAuthProvider from "./googleAuthProvider.js";
 
 class AuthService {
   constructor() {
     this.providers = {
       local: new LocalAuthProvider(),
+      google: new GoogleAuthProvider(),
     };
   }
 

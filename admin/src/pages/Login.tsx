@@ -3,6 +3,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import Alert from "../components/ui/Alert";
 import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
+import GoogleLoginButton from "../components/auth/GoogleLoginButton";
 import { useAuth } from "../contexts/AuthContext";
 
 const Login: React.FC = () => {
@@ -85,6 +86,21 @@ const Login: React.FC = () => {
             {isLoading ? "ログイン中..." : "ログイン"}
           </Button>
         </form>
+
+        <div className="mt-6">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">または</span>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <GoogleLoginButton className="w-full" />
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -352,6 +352,33 @@ export class ApiClient {
       }>("/top-page-data")
     );
   }
+
+  async getGoogleAuthUrl(): Promise<HttpResult<{ url: string }>> {
+    return this.withRetry(() =>
+      this.httpClient.get<{ url: string }>("/auth/google/url")
+    );
+  }
+
+  async getCurrentUser(): Promise<
+    HttpResult<{
+      user: {
+        id: string;
+        email: string;
+        displayName: string;
+        profileImageUrl: string;
+        role: string;
+        googleId?: string;
+      };
+    }>
+  > {
+    return this.withRetry(() => this.httpClient.get<{ user: any }>("/auth/me"));
+  }
+
+  async logout(): Promise<HttpResult<{ message: string }>> {
+    return this.withRetry(() =>
+      this.httpClient.post<{ message: string }>("/auth/logout", {})
+    );
+  }
 }
 
 export const apiClient = new ApiClient();
