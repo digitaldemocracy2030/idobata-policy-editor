@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-import crypto from "crypto";
+import crypto from "node:crypto";
+import mongoose from "mongoose";
 
 const unifiedUserSchema = new mongoose.Schema(
   {

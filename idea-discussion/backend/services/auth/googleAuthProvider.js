@@ -35,7 +35,7 @@ export default class GoogleAuthProvider extends AuthProviderInterface {
           user.googleId = googleId;
           await user.save();
         } else {
-          const isFirstUser = await AdminUser.countDocuments() === 0;
+          const isFirstUser = (await AdminUser.countDocuments()) === 0;
           
           user = new AdminUser({
             name,
