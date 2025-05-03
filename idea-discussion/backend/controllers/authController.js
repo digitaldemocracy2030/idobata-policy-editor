@@ -5,7 +5,7 @@ const getGoogleAuthUrl = async (req, res) => {
   try {
     const googleProvider = authService.getProvider("google");
     const authUrl = googleProvider.getAuthUrl();
-    
+
     res.json({ url: authUrl });
   } catch (error) {
     console.error("[AuthController] Get Google auth URL error:", error);
@@ -15,7 +15,7 @@ const getGoogleAuthUrl = async (req, res) => {
 
 const googleCallback = async (req, res) => {
   const { code } = req.query;
-  
+
   if (!code) {
     return res.status(400).json({ message: "認証コードが見つかりません" });
   }
