@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import GoogleLoginButton from "../components/auth/GoogleLoginButton";
 import Alert from "../components/ui/Alert";
 import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
-import GoogleLoginButton from "../components/auth/GoogleLoginButton";
 import { useAuth } from "../contexts/AuthContext";
 
 const Login: React.FC = () => {
@@ -90,7 +90,7 @@ const Login: React.FC = () => {
         <div className="mt-6">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300"></div>
+              <div className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-sm">
               <span className="px-2 bg-white text-gray-500">または</span>

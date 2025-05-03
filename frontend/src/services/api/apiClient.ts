@@ -371,7 +371,16 @@ export class ApiClient {
       };
     }>
   > {
-    return this.withRetry(() => this.httpClient.get<{ user: any }>("/auth/me"));
+    return this.withRetry(() => this.httpClient.get<{
+      user: {
+        id: string;
+        email: string;
+        displayName: string;
+        profileImageUrl: string;
+        role: string;
+        googleId?: string;
+      };
+    }>("/auth/me"));
   }
 
   async logout(): Promise<HttpResult<{ message: string }>> {

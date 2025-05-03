@@ -19,20 +19,20 @@ const googleCallback = async (req, res) => {
   if (!code) {
     return res.status(400).json({ message: "認証コードが見つかりません" });
   }
-  
+
   try {
     const { user, token } = await authService.authenticate("google", { code });
-    
+
     const redirectUrl = new URL(process.env.FRONTEND_URL);
     redirectUrl.searchParams.append("token", token);
-    
+
     res.redirect(redirectUrl.toString());
   } catch (error) {
     console.error("[AuthController] Google callback error:", error);
-    
+
     const redirectUrl = new URL(process.env.FRONTEND_URL);
     redirectUrl.searchParams.append("error", "認証に失敗しました");
-    
+
     res.redirect(redirectUrl.toString());
   }
 };

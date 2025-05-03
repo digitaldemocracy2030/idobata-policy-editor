@@ -53,7 +53,7 @@ export const UnifiedAuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       try {
         const tokenResult = await apiClient.getCurrentUser();
-        
+
         if (tokenResult.isOk()) {
           const userData = tokenResult.value;
           setUser({
@@ -117,7 +117,7 @@ export const UnifiedAuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     try {
       const urlResult = await apiClient.getGoogleAuthUrl();
-      
+
       if (urlResult.isErr()) {
         setError("Google認証URLの取得に失敗しました");
         return;
@@ -138,19 +138,19 @@ export const UnifiedAuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     try {
       const result = await apiClient.logout();
-      
+
       if (result.isErr()) {
         setError("ログアウトに失敗しました");
         return;
       }
 
       setUser(null);
-      
+
       const newUserId = uuidv4();
       localStorage.setItem("idobataUserId", newUserId);
-      
+
       const userResult = await apiClient.getUserInfo(newUserId);
-      
+
       if (userResult.isOk()) {
         const data = userResult.value;
         setUser({
@@ -179,7 +179,7 @@ export const UnifiedAuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const setDisplayName = async (name: string): Promise<boolean> => {
     if (!user) return false;
-    
+
     const result = await apiClient.updateUserDisplayName(user.id, name);
 
     if (result.isErr()) {
@@ -194,7 +194,7 @@ export const UnifiedAuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const uploadProfileImage = async (file: File): Promise<boolean> => {
     if (!user) return false;
-    
+
     const result = await apiClient.uploadProfileImage(user.id, file);
 
     if (result.isErr()) {

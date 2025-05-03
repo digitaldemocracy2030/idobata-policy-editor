@@ -15,28 +15,28 @@ export default class GoogleAuthProvider extends AuthProviderInterface {
   async authenticate({ code }) {
     try {
       const { tokens } = await this.client.getToken(code);
-      
+
       const ticket = await this.client.verifyIdToken({
         idToken: tokens.id_token,
         audience: process.env.GOOGLE_CLIENT_ID,
       });
-      
+
       const payload = ticket.getPayload();
       const googleId = payload.sub;
       const email = payload.email;
       const name = payload.name;
-      
+
       let user = await AdminUser.findOne({ googleId });
-      
+
       if (!user) {
         user = await AdminUser.findOne({ email });
-        
+
         if (user) {
           user.googleId = googleId;
           await user.save();
         } else {
           const isFirstUser = (await AdminUser.countDocuments()) === 0;
-          
+
           user = new AdminUser({
             name,
             email,
@@ -44,11 +44,11 @@ export default class GoogleAuthProvider extends AuthProviderInterface {
             role: isFirstUser ? "admin" : "editor",
             googleId,
           });
-          
+
           await user.save();
         }
       }
-      
+
       return user;
     } catch (error) {
       console.error("Google authentication error:", error);

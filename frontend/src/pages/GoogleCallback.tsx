@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/UnifiedAuthContext";
 
 const GoogleCallback: React.FC = () => {
@@ -22,7 +22,7 @@ const GoogleCallback: React.FC = () => {
 
         if (token) {
           localStorage.setItem("auth_token", token);
-          
+
           navigate("/");
         } else {
           setError("認証トークンが見つかりません");
@@ -41,7 +41,7 @@ const GoogleCallback: React.FC = () => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-4">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4" />
         <p className="text-lg text-gray-700">認証処理中...</p>
       </div>
     );
@@ -55,6 +55,7 @@ const GoogleCallback: React.FC = () => {
           <p>{error}</p>
         </div>
         <button
+          type="button"
           onClick={() => navigate("/")}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
@@ -66,7 +67,7 @@ const GoogleCallback: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4" />
       <p className="text-lg text-gray-700">リダイレクト中...</p>
     </div>
   );
