@@ -57,12 +57,12 @@ export const UnifiedAuthProvider: React.FC<{ children: React.ReactNode }> = ({
         if (tokenResult.isOk()) {
           const userData = tokenResult.value;
           setUser({
-            id: userData.id,
-            email: userData.email,
-            displayName: userData.displayName,
-            profileImageUrl: userData.profileImageUrl,
-            role: userData.role,
-            googleId: userData.googleId,
+            id: userData.user.id,
+            email: userData.user.email,
+            displayName: userData.user.displayName,
+            profileImageUrl: userData.user.profileImageUrl,
+            role: userData.user.role,
+            googleId: userData.user.googleId,
           });
           setLoading(false);
           return;

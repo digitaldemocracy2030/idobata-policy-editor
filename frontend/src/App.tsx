@@ -2,7 +2,6 @@ import { Navigate, Outlet, createBrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "./ThemeContext";
 import AppLayout from "./components/AppLayout";
 import PageLayout from "./components/layout/PageLayout";
-import { AuthProvider } from "./contexts/AuthContext";
 import { MockProvider } from "./contexts/MockContext";
 import { UnifiedAuthProvider } from "./contexts/UnifiedAuthContext";
 import About from "./pages/About";
