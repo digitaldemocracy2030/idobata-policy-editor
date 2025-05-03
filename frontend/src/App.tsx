@@ -2,11 +2,12 @@ import { Navigate, Outlet, createBrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "./ThemeContext";
 import AppLayout from "./components/AppLayout";
 import PageLayout from "./components/layout/PageLayout";
-import { AuthProvider } from "./contexts/AuthContext";
 import { MockProvider } from "./contexts/MockContext";
+import { UnifiedAuthProvider } from "./contexts/UnifiedAuthContext";
 import About from "./pages/About";
 import CommentsPage from "./pages/CommentsPage";
 import DataPage from "./pages/DataPage";
+import GoogleCallback from "./pages/GoogleCallback";
 import MainPage from "./pages/MainPage";
 import MyPage from "./pages/MyPage";
 import QuestionDetail from "./pages/QuestionDetail";
@@ -23,11 +24,11 @@ export const router = createBrowserRouter([
     path: "/",
     element: (
       <ThemeProvider>
-        <AuthProvider>
+        <UnifiedAuthProvider>
           <MockProvider>
             <App />
           </MockProvider>
-        </AuthProvider>
+        </UnifiedAuthProvider>
       </ThemeProvider>
     ),
     children: [
@@ -96,6 +97,10 @@ export const router = createBrowserRouter([
             <MyPage />
           </PageLayout>
         ),
+      },
+      {
+        path: "auth/google/callback",
+        element: <GoogleCallback />,
       },
     ],
   },

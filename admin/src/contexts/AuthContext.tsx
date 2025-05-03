@@ -8,6 +8,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
+  loginWithGoogle: () => Promise<void>;
   logout: () => void;
 }
 
@@ -74,6 +75,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const loginWithGoogle = async (): Promise<void> => {
+    try {
+      const result = await apiClient.getGoogleAuthUrl();
+      if (result.isOk()) {
+        window.location.href = result.value.url;
+      } else {
+        console.error("Failed to get Google auth URL");
+      }
+    } catch (error) {
+      console.error("Google login failed:", error);
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem("auth_token");
     setToken(null);
@@ -88,6 +102,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         isAuthenticated: !!user,
         isLoading,
         login,
+        loginWithGoogle,
         logout,
       }}
     >

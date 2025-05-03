@@ -1,4 +1,4 @@
-import AdminUser from "../models/AdminUser.js";
+import UnifiedUser from "../models/UnifiedUser.js";
 import authService from "../services/auth/authService.js";
 
 export const protect = async (req, res, next) => {
@@ -14,7 +14,7 @@ export const protect = async (req, res, next) => {
     try {
       const decoded = authService.verifyToken(token);
 
-      const user = await AdminUser.findById(decoded.id);
+      const user = await UnifiedUser.findById(decoded.id);
 
       if (!user) {
         return res.status(401).json({ message: "ユーザーが見つかりません" });

@@ -1,6 +1,51 @@
 import AdminUser from "../models/AdminUser.js";
 import authService from "../services/auth/authService.js";
 
+const getGoogleAuthUrl = async (req, res) => {
+  try {
+    const googleProvider = authService.getProvider("google");
+    const authUrl = googleProvider.getAuthUrl();
+
+    res.json({ url: authUrl });
+  } catch (error) {
+    console.error("[AuthController] Get Google auth URL error:", error);
+    res.status(500).json({ message: "Google認証URLの取得に失敗しました" });
+  }
+};
+
+const googleCallback = async (req, res) => {
+  const { code } = req.query;
+
+  if (!code) {
+    return res.status(400).json({ message: "認証コードが見つかりません" });
+  }
+
+  try {
+    const { user, token } = await authService.authenticate("google", { code });
+
+    const redirectUrl = new URL(process.env.FRONTEND_URL);
+    redirectUrl.searchParams.append("token", token);
+
+    res.redirect(redirectUrl.toString());
+  } catch (error) {
+    console.error("[AuthController] Google callback error:", error);
+
+    const redirectUrl = new URL(process.env.FRONTEND_URL);
+    redirectUrl.searchParams.append("error", "認証に失敗しました");
+
+    res.redirect(redirectUrl.toString());
+  }
+};
+
+const logout = async (req, res) => {
+  try {
+    res.json({ message: "ログアウトしました" });
+  } catch (error) {
+    console.error("[AuthController] Logout error:", error);
+    res.status(500).json({ message: "ログアウト処理中にエラーが発生しました" });
+  }
+};
+
 const initializeAdminUser = async (req, res) => {
   try {
     const adminCount = await AdminUser.countDocuments();
