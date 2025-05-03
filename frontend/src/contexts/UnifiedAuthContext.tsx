@@ -61,7 +61,7 @@ export const UnifiedAuthProvider: React.FC<{ children: React.ReactNode }> = ({
             email: userData.user.email,
             displayName: userData.user.displayName,
             profileImageUrl: userData.user.profileImageUrl,
-            role: userData.user.role,
+            role: userData.user.role as "admin" | "editor" | "user",
             googleId: userData.user.googleId,
           });
           setLoading(false);
