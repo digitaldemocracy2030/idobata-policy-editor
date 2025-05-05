@@ -273,12 +273,6 @@ const handleNewMessageByTheme = async (req, res) => {
         .json({ error: "AI failed to generate a response." });
     }
 
-    // Add AI response to the thread
-    chatThread.messages.push({
-      role: "assistant",
-      content: aiResponseContent,
-      timestamp: new Date(),
-    });
     // --- End LLM Call ---
 
     const sentenceDelimiters = /([。！？])/g;
@@ -292,9 +286,23 @@ const handleNewMessageByTheme = async (req, res) => {
       }, [])
       .filter((sentence) => sentence.trim().length > 0);
 
-    // Store sentences that will be sent with delay in the thread
-    if (sentences.length > 1) {
-      chatThread.pendingSentences = sentences.slice(1);
+    // Add only the first sentence to the thread
+    if (sentences.length > 0) {
+      chatThread.messages.push({
+        role: "assistant",
+        content: sentences[0],
+        timestamp: new Date(),
+      });
+      
+      if (sentences.length > 1) {
+        chatThread.pendingSentences = sentences.slice(1);
+      }
+    } else {
+      chatThread.messages.push({
+        role: "assistant",
+        content: aiResponseContent,
+        timestamp: new Date(),
+      });
     }
 
     // Save the updated thread

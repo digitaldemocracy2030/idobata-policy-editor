@@ -189,7 +189,15 @@ io.on("connection", (socket) => {
       `Socket ${socket.id} clearing chat queue for thread: ${threadId}`
     );
     const ChatThread = mongoose.model("ChatThread");
-    ChatThread.findByIdAndUpdate(threadId, { pendingSentences: [] })
+    
+    ChatThread.findById(threadId)
+      .then((thread) => {
+        if (thread && thread.pendingSentences.length > 0) {
+          thread.pendingSentences = [];
+          return thread.save();
+        }
+        return Promise.resolve();
+      })
       .then(() => {
         console.log(`Cleared pending sentences for thread: ${threadId}`);
       })

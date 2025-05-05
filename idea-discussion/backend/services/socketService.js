@@ -126,8 +126,16 @@ export async function streamChatResponse(
 
     emitChatResponseSentence(themeId, threadId, sentence);
 
-    await ChatThread.findByIdAndUpdate(threadId, {
-      $pop: { pendingSentences: -1 },
+    await ChatThread.findById(threadId).then(async (thread) => {
+      if (thread && thread.messages.length > 0) {
+        const lastMessage = thread.messages[thread.messages.length - 1];
+        lastMessage.content += sentence;
+        await thread.save();
+      }
+      
+      return ChatThread.findByIdAndUpdate(threadId, {
+        $pop: { pendingSentences: -1 },
+      });
     });
   }
 }
