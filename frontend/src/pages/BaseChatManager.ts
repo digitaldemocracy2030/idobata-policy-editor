@@ -67,14 +67,10 @@ export class BaseChatManager {
   }
 
   protected subscribeToExtraction(): void {
-    console.log(
-      `[BaseChatManager] Subscribing to theme: ${this.themeId}`
-    );
+    console.log(`[BaseChatManager] Subscribing to theme: ${this.themeId}`);
     socketClient.subscribeToTheme(this.themeId);
     if (this.threadId) {
-      console.log(
-        `[BaseChatManager] Subscribing to thread: ${this.threadId}`
-      );
+      console.log(`[BaseChatManager] Subscribing to thread: ${this.threadId}`);
       socketClient.subscribeToThread(this.threadId);
     }
 
@@ -95,9 +91,7 @@ export class BaseChatManager {
     this.unsubscribeNewExtraction = socketClient.onNewExtraction(
       this.handleNewExtraction.bind(this)
     );
-    console.log(
-      "[BaseChatManager] Registering extraction-update handler"
-    );
+    console.log("[BaseChatManager] Registering extraction-update handler");
     this.unsubscribeExtractionUpdate = socketClient.onExtractionUpdate(
       this.handleExtractionUpdate.bind(this)
     );

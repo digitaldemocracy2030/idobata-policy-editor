@@ -1,6 +1,6 @@
 import { apiClient } from "../services/api/apiClient";
-import { BaseChatManager, BaseChatManagerOptions } from "./BaseChatManager";
 import { SystemMessage, SystemNotification } from "../types";
+import { BaseChatManager, BaseChatManagerOptions } from "./BaseChatManager";
 
 export interface QuestionChatManagerOptions extends BaseChatManagerOptions {
   questionId: string;

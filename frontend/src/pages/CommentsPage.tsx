@@ -133,8 +133,10 @@ const CommentsPage = () => {
       relevance: Math.round(s.relevanceScore * 100) || 0,
     });
 
-    const issuesData = currentQuestionDetail.relatedProblems.map(mapProblemToOpinion);
-    const solutionsData = currentQuestionDetail.relatedSolutions.map(mapSolutionToOpinion);
+    const issuesData =
+      currentQuestionDetail.relatedProblems.map(mapProblemToOpinion);
+    const solutionsData =
+      currentQuestionDetail.relatedSolutions.map(mapSolutionToOpinion);
 
     const opinions = {
       issues: issuesData,
