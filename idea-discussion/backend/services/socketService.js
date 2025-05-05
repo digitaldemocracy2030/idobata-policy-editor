@@ -1,5 +1,5 @@
-import { io } from "../server.js";
 import mongoose from "mongoose";
+import { io } from "../server.js";
 
 /**
  * Emit a new extraction event to all clients subscribed to a theme or thread
