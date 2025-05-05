@@ -2,8 +2,8 @@ import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import config from "../config.js";
 import { getAuthenticatedOctokit } from "../github/client.js";
-import { findOrCreateDraftPr } from "../github/utils.js"; // findOrCreateDraftPr をインポート
 import { extractDocumentName, formatPrTitle } from "../github/prTitleUtils.js"; // 新しい関数をインポート
+import { findOrCreateDraftPr } from "../github/utils.js"; // findOrCreateDraftPr をインポート
 import logger from "../logger.js";
 
 export const updatePrSchema = z.object({
@@ -35,11 +35,13 @@ export async function handleUpdatePr(
     // 1. PRを検索または作成
     // 新規作成時のデフォルトタイトル（title が指定されていない場合に使用）
     const documentName = filePath ? extractDocumentName(filePath) : "";
-    const defaultPrTitle = title || formatPrTitle(
-      userName || "匿名ユーザー",
-      documentName,
-      `${branchName}の変更`
-    );
+    const defaultPrTitle =
+      title ||
+      formatPrTitle(
+        userName || "匿名ユーザー",
+        documentName,
+        `${branchName}の変更`
+      );
     
     // findOrCreateDraftPr は description を新規作成時の body として使用する
     const prInfo = await findOrCreateDraftPr(
