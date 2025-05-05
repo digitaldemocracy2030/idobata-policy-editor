@@ -85,7 +85,6 @@ const Login: React.FC = () => {
             {isLoading ? "ログイン中..." : "ログイン"}
           </Button>
         </form>
-
       </div>
     </div>
   );
