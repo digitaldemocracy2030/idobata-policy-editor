@@ -210,8 +210,6 @@ export class ApiClient {
       method: "POST",
     });
   }
-
-
 }
 
 export const apiClient = new ApiClient();

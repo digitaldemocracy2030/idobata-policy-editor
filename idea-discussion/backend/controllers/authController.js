@@ -184,7 +184,7 @@ const getUserInfo = async (req, res) => {
   try {
     if (req.user) {
       const user = await User.findById(req.user.id);
-      
+
       if (user) {
         return res.json({
           user: {
@@ -196,20 +196,20 @@ const getUserInfo = async (req, res) => {
         });
       }
     }
-    
+
     const { userId } = req.params;
-    
+
     if (!userId) {
       return res.status(400).json({ message: "ユーザーIDが必要です" });
     }
-    
+
     let user = await User.findOne({ userId });
-    
+
     if (!user) {
       user = new User({ userId });
       await user.save();
     }
-    
+
     res.json({
       id: user._id,
       userId: user.userId,
@@ -231,14 +231,13 @@ const logout = async (req, res) => {
   }
 };
 
-export { 
-  login, 
-  getCurrentUser, 
-  createAdminUser, 
+export {
+  login,
+  getCurrentUser,
+  createAdminUser,
   initializeAdminUser,
-  
   getGoogleAuthUrl,
   googleCallback,
   getUserInfo,
-  logout
+  logout,
 };
