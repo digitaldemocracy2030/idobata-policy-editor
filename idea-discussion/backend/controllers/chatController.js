@@ -40,10 +40,15 @@ const handleNewMessageByTheme = async (req, res) => {
         return res.status(404).json({ error: "Chat thread not found." });
       }
       
-      if (chatThread.pendingSentences && chatThread.pendingSentences.length > 0) {
+      if (
+        chatThread.pendingSentences &&
+        chatThread.pendingSentences.length > 0
+      ) {
         console.log(`Clearing pending sentences for thread ${threadId}`);
         chatThread.pendingSentences = [];
-        const { clearPendingSentences } = await import("../services/socketService.js");
+        const { clearPendingSentences } = await import(
+          "../services/socketService.js"
+        );
         clearPendingSentences(threadId);
       }
 
@@ -285,7 +290,7 @@ const handleNewMessageByTheme = async (req, res) => {
         }
         return acc;
       }, [])
-      .filter(sentence => sentence.trim().length > 0);
+      .filter((sentence) => sentence.trim().length > 0);
 
     // Store sentences that will be sent with delay in the thread
     if (sentences.length > 1) {
@@ -318,7 +323,8 @@ const handleNewMessageByTheme = async (req, res) => {
     // --- End Trigger ---
 
     // Return the first sentence immediately
-    const firstSentence = sentences.length > 0 ? sentences[0] : aiResponseContent;
+    const firstSentence =
+      sentences.length > 0 ? sentences[0] : aiResponseContent;
     const responsePayload = {
       response: firstSentence,
       threadId: chatThread._id,
@@ -329,12 +335,18 @@ const handleNewMessageByTheme = async (req, res) => {
     }
 
     if (sentences.length > 1) {
-      const { streamChatResponse } = await import("../services/socketService.js");
+      const { streamChatResponse } = await import(
+        "../services/socketService.js"
+      );
       setTimeout(() => {
-        streamChatResponse(themeId, chatThread._id.toString(), sentences)
-          .catch(err => {
-            console.error(`[Streaming] Error for thread ${chatThread._id}:`, err);
-          });
+        streamChatResponse(themeId, chatThread._id.toString(), sentences).catch(
+          (err) => {
+            console.error(
+              `[Streaming] Error for thread ${chatThread._id}:`,
+              err
+            );
+          }
+        );
       }, 0);
     }
 
