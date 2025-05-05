@@ -109,8 +109,8 @@ const Top = () => {
             topPageData?.latestQuestions.map((q) => ({
               id: q._id,
               title: q.questionText,
-              problemCount: 0, // Default values since these don't exist in the Question type
-              solutionCount: 0,
+              problemCount: q.issueCount || 0, // バックエンドから取得したissueCountを使用
+              solutionCount: q.solutionCount || 0, // バックエンドから取得したsolutionCountを使用
             })) || [],
           themes:
             topPageData?.latestThemes.map((t) => ({
