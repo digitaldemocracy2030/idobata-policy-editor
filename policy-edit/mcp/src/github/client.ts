@@ -1,8 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
 import { App } from "@octokit/app";
-import { restEndpointMethods } from "@octokit/plugin-rest-endpoint-methods";
-import type { RestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-methods"; // Use the documented type export
 import { Octokit } from "@octokit/rest";
 import config from "../config.js";
 import logger from "../logger.js";
@@ -10,11 +8,9 @@ import logger from "../logger.js";
 let app: App | null = null;
 // Define a more specific type for the cached Octokit instance
 // Define the custom Octokit class with the REST methods plugin
-const OctokitWithRest = Octokit.plugin(restEndpointMethods);
-// Define a type for the Octokit instance returned by the App, using the plugin's types
-type InstallationOctokit = InstanceType<typeof OctokitWithRest> & {
-  rest: RestEndpointMethodTypes;
-};
+const OctokitWithRest = Octokit;
+// Define a type for the Octokit instance returned by the App
+type InstallationOctokit = InstanceType<typeof OctokitWithRest>;
 let installationOctokit: InstallationOctokit | null = null;
 // tokenExpiration is removed as getInstallationOctokit likely handles token refresh.
 
