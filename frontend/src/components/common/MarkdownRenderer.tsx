@@ -9,10 +9,7 @@ interface MarkdownRendererProps {
   className?: string;
 }
 
-export function MarkdownRenderer({
-  markdown,
-  className,
-}: MarkdownRendererProps) {
+function MarkdownRenderer({ markdown, className }: MarkdownRendererProps) {
   if (!markdown) {
     return null;
   }

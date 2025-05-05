@@ -27,6 +27,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.9.0",
     "@octokit/app": "^15.1.6",
+    "@octokit/plugin-rest-endpoint-methods": "^10.0.1",
     "@octokit/rest": "^21.1.1",
     "dotenv": "^16.5.0",
     "pino": "^9.6.0",

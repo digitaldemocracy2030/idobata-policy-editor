@@ -41,7 +41,7 @@ export const useMock = (): MockContextProps => {
   return context;
 };
 
-export const addMockParam = (path: To, isMockMode: boolean): To => {
+const addMockParam = (path: To, isMockMode: boolean): To => {
   if (!isMockMode) {
     return path;
   }

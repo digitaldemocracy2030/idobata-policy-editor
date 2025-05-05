@@ -5,7 +5,7 @@ interface SectionHeadingProps {
   className?: string;
 }
 
-export function SectionHeading({ title, className }: SectionHeadingProps) {
+function SectionHeading({ title, className }: SectionHeadingProps) {
   return (
     <div className={cn("flex py-2 mb-3 items-center", className)}>
       <span className="w-[6px] h-8 bg-primary rounded-full mr-2" />

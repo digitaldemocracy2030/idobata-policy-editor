@@ -4,7 +4,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4"
+    "@biomejs/biome": "^1.9.4",
+    "knip": "^5.53.0"
   },
   "workspaces": [
     "policy-edit/backend",
@@ -19,6 +20,8 @@
     "test": "npm run test -ws",
     "typecheck": "npm run typecheck -ws",
     "lint": "biome check .",
-    "format": "biome check --write ."
+    "format": "biome check --write .",
+    "knip": "knip",
+    "knip:fix": "knip --fix"
   }
 }

@@ -11,14 +11,14 @@ dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 
 // Server configuration
 export const PORT = process.env.PORT || 3001;
-export const NODE_ENV = process.env.NODE_ENV || "development";
+const NODE_ENV = process.env.NODE_ENV || "development";
 
 // OpenRouter API configuration
 export const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
 // GitHub repository settings
-export const GITHUB_REPO_OWNER = process.env.GITHUB_REPO_OWNER;
-export const GITHUB_REPO_NAME = process.env.GITHUB_REPO_NAME;
+const GITHUB_REPO_OWNER = process.env.GITHUB_REPO_OWNER;
+const GITHUB_REPO_NAME = process.env.GITHUB_REPO_NAME;
 
 // CORS settings
 export const CORS_ORIGIN =

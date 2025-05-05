@@ -40,7 +40,7 @@ const defaultRetryOptions: RetryOptions = {
   },
 };
 
-export class ApiClient {
+class ApiClient {
   private httpClient: HttpClient;
   private retryOptions: RetryOptions;
 

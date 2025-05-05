@@ -1,14 +1,5 @@
 import * as React from "react";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "../base/sheet";
+import { Sheet, SheetContent } from "../base/sheet";
 
 // Chat-specific sheet content component
 const ChatSheetContent = React.forwardRef<
@@ -22,13 +13,4 @@ const ChatSheetContent = React.forwardRef<
 ChatSheetContent.displayName = "ChatSheetContent";
 
 // Re-export base components with chat-specific names
-export {
-  Sheet as ChatSheet,
-  SheetTrigger as ChatSheetTrigger,
-  SheetClose as ChatSheetClose,
-  ChatSheetContent,
-  SheetHeader as ChatSheetHeader,
-  SheetFooter as ChatSheetFooter,
-  SheetTitle as ChatSheetTitle,
-  SheetDescription as ChatSheetDescription,
-};
+export { Sheet as ChatSheet, ChatSheetContent };

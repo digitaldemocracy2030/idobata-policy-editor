@@ -1,0 +1,39 @@
+{
+  "$schema": "https://unpkg.com/knip@latest/schema.json",
+  "workspaces": {
+    "admin": {
+      "entry": ["src/main.tsx"],
+      "project": "**/*.{js,ts,jsx,tsx}"
+    },
+    "frontend": {
+      "entry": ["src/main.tsx"],
+      "project": "**/*.{js,ts,jsx,tsx}"
+    },
+    "idea-discussion/backend": {
+      "entry": ["server.js"],
+      "project": "**/*.{js,ts,jsx,tsx}"
+    },
+    "policy-edit/backend": {
+      "entry": ["src/index.ts"],
+      "project": "**/*.{js,ts,jsx,tsx}"
+    },
+    "policy-edit/frontend": {
+      "entry": ["src/main.tsx"],
+      "project": "**/*.{js,ts,jsx,tsx}"
+    },
+    "policy-edit/mcp": {
+      "entry": ["src/main.ts"],
+      "project": "**/*.{js,ts,jsx,tsx}"
+    }
+  },
+  "ignore": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/*.d.ts",
+    "**/.mypy_cache/**",
+    "**/vite.config.ts",
+    "**/tailwind.config.js",
+    "**/postcss.config.js"
+  ],
+  "ignoreDependencies": ["@biomejs/biome", "@types/*", "typescript", "vitest"]
+}

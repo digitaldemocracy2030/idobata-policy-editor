@@ -102,7 +102,6 @@ const triggerQuestionGenerationByTheme = async (req, res) => {
 };
 
 export {
-  triggerQuestionGeneration,
   getProblemsByTheme,
   getSolutionsByTheme,
   triggerQuestionGenerationByTheme,
