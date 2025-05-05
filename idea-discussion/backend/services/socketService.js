@@ -10,7 +10,7 @@ import { io } from "../server.js";
  */
 export function emitNewExtraction(themeId, threadId, type, data) {
   console.log(
-    `[SocketService] Emitting new-extraction event for theme:${themeId}`
+    `[SocketService] Emitting new-extraction event for theme:${themeId}`,
   );
 
   const event = {
@@ -22,7 +22,7 @@ export function emitNewExtraction(themeId, threadId, type, data) {
 
   if (threadId) {
     console.log(
-      `[SocketService] Emitting new-extraction event for thread:${threadId}`
+      `[SocketService] Emitting new-extraction event for thread:${threadId}`,
     );
     io.to(`thread:${threadId}`).emit("new-extraction", event);
   }
@@ -37,7 +37,7 @@ export function emitNewExtraction(themeId, threadId, type, data) {
  */
 export function emitExtractionUpdate(themeId, threadId, type, data) {
   console.log(
-    `[SocketService] Emitting extraction-update event for theme:${themeId}`
+    `[SocketService] Emitting extraction-update event for theme:${themeId}`,
   );
 
   const event = {
@@ -49,7 +49,7 @@ export function emitExtractionUpdate(themeId, threadId, type, data) {
 
   if (threadId) {
     console.log(
-      `[SocketService] Emitting extraction-update event for thread:${threadId}`
+      `[SocketService] Emitting extraction-update event for thread:${threadId}`,
     );
     io.to(`thread:${threadId}`).emit("extraction-update", event);
   }
@@ -62,7 +62,7 @@ export function emitExtractionUpdate(themeId, threadId, type, data) {
  */
 export function emitChatResponseSentence(themeId, threadId, sentence) {
   console.log(
-    `[SocketService] Emitting chat-response-sentence event for thread:${threadId}`
+    `[SocketService] Emitting chat-response-sentence event for thread:${threadId}`,
   );
 
   const event = {
@@ -81,7 +81,7 @@ export function emitChatResponseSentence(themeId, threadId, sentence) {
  */
 export function clearPendingSentences(threadId) {
   console.log(
-    `[SocketService] Clearing pending sentences for thread:${threadId}`
+    `[SocketService] Clearing pending sentences for thread:${threadId}`,
   );
 
   if (threadId) {
@@ -102,7 +102,7 @@ export async function streamChatResponse(
   themeId,
   threadId,
   sentences,
-  startIndex = 1
+  startIndex = 1,
 ) {
   if (sentences.length <= startIndex) {
     return;
@@ -114,7 +114,7 @@ export async function streamChatResponse(
     const thread = await ChatThread.findById(threadId);
     if (!thread || thread.pendingSentences.length === 0) {
       console.log(
-        `[SocketService] Stopping stream for thread:${threadId} - no pending sentences`
+        `[SocketService] Stopping stream for thread:${threadId} - no pending sentences`,
       );
       return;
     }
@@ -132,7 +132,7 @@ export async function streamChatResponse(
         lastMessage.content += sentence;
         await thread.save();
       }
-      
+
       return ChatThread.findByIdAndUpdate(threadId, {
         $pop: { pendingSentences: -1 },
       });

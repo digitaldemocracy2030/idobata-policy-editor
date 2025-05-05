@@ -39,7 +39,7 @@ const handleNewMessageByTheme = async (req, res) => {
         console.error(`Chat thread with ID ${threadId} not found.`);
         return res.status(404).json({ error: "Chat thread not found." });
       }
-      
+
       if (
         chatThread.pendingSentences &&
         chatThread.pendingSentences.length > 0
@@ -62,14 +62,14 @@ const handleNewMessageByTheme = async (req, res) => {
       // Optional: Verify if the userId matches the thread's userId if needed for security
       if (chatThread.userId !== userId) {
         console.warn(
-          `User ID mismatch for thread ${threadId}. Request userId: ${userId}, Thread userId: ${chatThread.userId}`
+          `User ID mismatch for thread ${threadId}. Request userId: ${userId}, Thread userId: ${chatThread.userId}`,
         );
       }
       console.log(`Found existing chat thread with ID: ${threadId}`);
     } else {
       // If no threadId is provided, create a new thread
       console.log(
-        `Creating new chat thread for userId: ${userId} in theme: ${themeId}`
+        `Creating new chat thread for userId: ${userId} in theme: ${themeId}`,
       );
       chatThread = new ChatThread({
         userId: userId,
@@ -204,7 +204,7 @@ const handleNewMessageByTheme = async (req, res) => {
     } catch (dbError) {
       console.error(
         `Error fetching reference opinions for theme ${themeId}:`,
-        dbError
+        dbError,
       );
       // Continue without reference opinions if DB fetch fails
     }
@@ -260,7 +260,7 @@ const handleNewMessageByTheme = async (req, res) => {
       ...chatThread.messages.map((msg) => ({
         role: msg.role,
         content: msg.content,
-      }))
+      })),
     );
 
     // Call the LLM service
@@ -293,7 +293,7 @@ const handleNewMessageByTheme = async (req, res) => {
         content: sentences[0],
         timestamp: new Date(),
       });
-      
+
       if (sentences.length > 1) {
         chatThread.pendingSentences = sentences.slice(1);
       }
@@ -324,7 +324,7 @@ const handleNewMessageByTheme = async (req, res) => {
       processExtraction(job).catch((err) => {
         console.error(
           `[Async Extraction Call] Error for thread ${chatThread._id} in theme ${themeId}:`,
-          err
+          err,
         );
       });
     }, 0);
@@ -351,9 +351,9 @@ const handleNewMessageByTheme = async (req, res) => {
           (err) => {
             console.error(
               `[Streaming] Error for thread ${chatThread._id}:`,
-              err
+              err,
             );
-          }
+          },
         );
       }, 0);
     }
@@ -404,7 +404,7 @@ const getThreadExtractionsByTheme = async (req, res) => {
   } catch (error) {
     console.error(
       `Error getting thread extractions for theme ${themeId}:`,
-      error
+      error,
     );
     if (error.name === "CastError") {
       return res.status(400).json({ error: "Invalid Thread ID format." });
