@@ -133,29 +133,10 @@ const CommentsPage = () => {
       relevance: Math.round(s.relevanceScore * 100) || 0,
     });
 
-    const createRepeatedData = (items, mapFn) =>
-      Array(3)
-        .fill(null)
-        .flatMap((_, repeatIndex) =>
-          items.map((item) => ({
-            ...mapFn(item),
-            id: `${mapFn(item).id}_${repeatIndex}`, // Ensure unique IDs
-          }))
-        );
-
-    const issuesData = isMockMode
-      ? createRepeatedData(
-          currentQuestionDetail.relatedProblems,
-          mapProblemToOpinion
-        )
-      : currentQuestionDetail.relatedProblems.map(mapProblemToOpinion);
-
-    const solutionsData = isMockMode
-      ? createRepeatedData(
-          currentQuestionDetail.relatedSolutions,
-          mapSolutionToOpinion
-        )
-      : currentQuestionDetail.relatedSolutions.map(mapSolutionToOpinion);
+    const issuesData =
+      currentQuestionDetail.relatedProblems.map(mapProblemToOpinion);
+    const solutionsData =
+      currentQuestionDetail.relatedSolutions.map(mapSolutionToOpinion);
 
     const opinions = {
       issues: issuesData,
