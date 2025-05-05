@@ -27,6 +27,10 @@ const chatThreadSchema = new mongoose.Schema(
       index: true, // Index userId for faster lookups
     },
     messages: [messageSchema],
+    pendingSentences: {
+      type: [String],
+      default: [],
+    },
     extractedProblemIds: [
       {
         type: mongoose.Schema.Types.ObjectId,

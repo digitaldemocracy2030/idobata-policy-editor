@@ -184,6 +184,18 @@ io.on("connection", (socket) => {
     socket.leave(`thread:${threadId}`);
   });
 
+  socket.on("clear-chat-queue", (threadId) => {
+    console.log(`Socket ${socket.id} clearing chat queue for thread: ${threadId}`);
+    const ChatThread = mongoose.model("ChatThread");
+    ChatThread.findByIdAndUpdate(threadId, { pendingSentences: [] })
+      .then(() => {
+        console.log(`Cleared pending sentences for thread: ${threadId}`);
+      })
+      .catch(err => {
+        console.error(`Error clearing pending sentences for thread: ${threadId}`, err);
+      });
+  });
+
   socket.on("disconnect", () => {
     console.log(`Socket disconnected: ${socket.id}`);
   });

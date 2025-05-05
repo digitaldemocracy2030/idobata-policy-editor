@@ -39,6 +39,13 @@ const handleNewMessageByTheme = async (req, res) => {
         console.error(`Chat thread with ID ${threadId} not found.`);
         return res.status(404).json({ error: "Chat thread not found." });
       }
+      
+      if (chatThread.pendingSentences && chatThread.pendingSentences.length > 0) {
+        console.log(`Clearing pending sentences for thread ${threadId}`);
+        chatThread.pendingSentences = [];
+        const { clearPendingSentences } = await import("../services/socketService.js");
+        clearPendingSentences(threadId);
+      }
 
       if (!chatThread.themeId || chatThread.themeId.toString() !== themeId) {
         console.error(`Thread ${threadId} does not belong to theme ${themeId}`);
@@ -269,6 +276,22 @@ const handleNewMessageByTheme = async (req, res) => {
     });
     // --- End LLM Call ---
 
+    const sentenceDelimiters = /([。！？])/g;
+    const sentences = aiResponseContent
+      .split(sentenceDelimiters)
+      .reduce((acc, part, index, array) => {
+        if (index % 2 === 0 && index < array.length - 1) {
+          acc.push(part + array[index + 1]);
+        }
+        return acc;
+      }, [])
+      .filter(sentence => sentence.trim().length > 0);
+
+    // Store sentences that will be sent with delay in the thread
+    if (sentences.length > 1) {
+      chatThread.pendingSentences = sentences.slice(1);
+    }
+
     // Save the updated thread
     await chatThread.save();
     console.log(`Saved chat thread for userId: ${userId} in theme: ${themeId}`);
@@ -294,13 +317,25 @@ const handleNewMessageByTheme = async (req, res) => {
     }, 0);
     // --- End Trigger ---
 
-    // Return the response
+    // Return the first sentence immediately
+    const firstSentence = sentences.length > 0 ? sentences[0] : aiResponseContent;
     const responsePayload = {
-      response: aiResponseContent,
+      response: firstSentence,
       threadId: chatThread._id,
+      hasMoreSentences: sentences.length > 1,
     };
     if (req.body.userId !== userId) {
       responsePayload.userId = userId;
+    }
+
+    if (sentences.length > 1) {
+      const { streamChatResponse } = await import("../services/socketService.js");
+      setTimeout(() => {
+        streamChatResponse(themeId, chatThread._id.toString(), sentences)
+          .catch(err => {
+            console.error(`[Streaming] Error for thread ${chatThread._id}:`, err);
+          });
+      }, 0);
     }
 
     res.status(200).json(responsePayload);
