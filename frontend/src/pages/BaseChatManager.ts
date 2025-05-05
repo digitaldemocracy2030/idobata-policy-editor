@@ -62,7 +62,7 @@ export class BaseChatManager {
     }
   }
 
-  protected async sendMessageToBackend(userMessage: string): Promise<void> {
+  protected async sendMessageToBackend(_userMessage: string): Promise<void> {
     throw new Error("Method not implemented");
   }
 
