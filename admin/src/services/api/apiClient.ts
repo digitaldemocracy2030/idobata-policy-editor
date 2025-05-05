@@ -19,7 +19,7 @@ import type {
 
 export type ApiResult<T> = Result<T, ApiError>;
 
-export class ApiClient {
+class ApiClient {
   private baseUrl: string;
 
   constructor() {

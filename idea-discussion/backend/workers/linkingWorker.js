@@ -321,8 +321,4 @@ async function linkQuestionToAllItems(questionId) {
   }
 }
 
-export {
-  linkItemToQuestions,
-  linkQuestionToAllItems,
-  linkSpecificQuestionToItem,
-};
+export { linkItemToQuestions, linkQuestionToAllItems };

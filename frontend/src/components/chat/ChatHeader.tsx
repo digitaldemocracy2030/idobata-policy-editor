@@ -1,7 +1,7 @@
 import { X } from "lucide-react";
 import type React from "react";
+import { SheetClose } from "../ui/base/sheet";
 import { Button } from "../ui/button";
-import { SheetClose } from "../ui/sheet";
 
 interface ChatHeaderProps {
   onDragStart: (clientY: number) => void;

@@ -4,12 +4,12 @@ import { useAuth } from "../../contexts/AuthContext";
 import { Link, useMock } from "../../contexts/MockContext";
 import { useSiteConfig } from "../../contexts/SiteConfigContext";
 import { useThemes } from "../../hooks/useThemes";
+import { SheetTrigger } from "../ui/base/sheet";
 import { Button } from "../ui/button";
 import {
   NavigationRouterLink,
   NavigationSheet,
   NavigationSheetContent,
-  NavigationSheetTrigger,
 } from "../ui/navigation/menu-sheet";
 
 const Header = () => {
@@ -48,11 +48,11 @@ const Header = () => {
       <div className="flex justify-between items-center">
         {/* ハンバーガーメニュー（左） */}
         <NavigationSheet>
-          <NavigationSheetTrigger asChild>
+          <SheetTrigger asChild>
             <Button variant="ghost" size="icon">
               <Menu className="h-6 w-6" />
             </Button>
-          </NavigationSheetTrigger>
+          </SheetTrigger>
           <NavigationSheetContent className="w-72">
             <nav className="flex flex-col gap-4 mt-8">
               <NavigationRouterLink

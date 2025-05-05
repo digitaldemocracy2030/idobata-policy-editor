@@ -9,7 +9,7 @@ interface BreadcrumbViewProps {
   items: BreadcrumbItem[];
 }
 
-export function BreadcrumbView({ items }: BreadcrumbViewProps) {
+function BreadcrumbView({ items }: BreadcrumbViewProps) {
   return (
     <nav className="text-sm text-muted-foreground mb-4" aria-label="Breadcrumb">
       {items.map((item, index) => (

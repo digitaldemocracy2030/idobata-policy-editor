@@ -5,28 +5,6 @@
 // - For chat: import from '../ui/chat/chat-sheet'
 // - For generic sheets: import from '../ui/base/sheet'
 
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetOverlay,
-  SheetPortal,
-  SheetTitle,
-  SheetTrigger,
-} from "./base/sheet";
+import { Sheet, SheetContent } from "./base/sheet";
 
-export {
-  Sheet,
-  SheetPortal,
-  SheetOverlay,
-  SheetTrigger,
-  SheetClose,
-  SheetContent,
-  SheetHeader,
-  SheetFooter,
-  SheetTitle,
-  SheetDescription,
-};
+export { Sheet, SheetContent };
