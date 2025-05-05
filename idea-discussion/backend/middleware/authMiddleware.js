@@ -1,4 +1,5 @@
-import UnifiedUser from "../models/UnifiedUser.js";
+import AdminUser from "../models/AdminUser.js";
+import User from "../models/User.js";
 import authService from "../services/auth/authService.js";
 
 export const protect = async (req, res, next) => {
@@ -14,7 +15,7 @@ export const protect = async (req, res, next) => {
     try {
       const decoded = authService.verifyToken(token);
 
-      const user = await UnifiedUser.findById(decoded.id);
+      const user = await AdminUser.findById(decoded.id);
 
       if (!user) {
         return res.status(401).json({ message: "ユーザーが見つかりません" });
@@ -23,6 +24,7 @@ export const protect = async (req, res, next) => {
       req.user = {
         id: user._id,
         email: user.email,
+        name: user.name,
         role: user.role,
       };
 
@@ -32,6 +34,42 @@ export const protect = async (req, res, next) => {
     }
   } catch (error) {
     console.error("[AuthMiddleware] Protect error:", error);
+    res.status(500).json({ message: "サーバーエラーが発生しました" });
+  }
+};
+
+export const protectUser = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "認証が必要です" });
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    try {
+      const decoded = authService.verifyToken(token);
+
+      const user = await User.findById(decoded.id);
+
+      if (!user) {
+        return res.status(401).json({ message: "ユーザーが見つかりません" });
+      }
+
+      req.user = {
+        id: user._id,
+        email: user.email,
+        displayName: user.displayName,
+        profileImageUrl: user.profileImageUrl,
+      };
+
+      next();
+    } catch (error) {
+      return res.status(401).json({ message: "トークンが無効です" });
+    }
+  } catch (error) {
+    console.error("[AuthMiddleware] Protect user error:", error);
     res.status(500).json({ message: "サーバーエラーが発生しました" });
   }
 };

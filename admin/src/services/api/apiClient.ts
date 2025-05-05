@@ -211,15 +211,7 @@ export class ApiClient {
     });
   }
 
-  async getGoogleAuthUrl(): Promise<ApiResult<{ url: string }>> {
-    return this.request<{ url: string }>("/auth/google/url");
-  }
 
-  async logout(): Promise<ApiResult<{ message: string }>> {
-    return this.request<{ message: string }>("/auth/logout", {
-      method: "POST",
-    });
-  }
 }
 
 export const apiClient = new ApiClient();

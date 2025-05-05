@@ -1,5 +1,5 @@
 import { OAuth2Client } from "google-auth-library";
-import AdminUser from "../../models/AdminUser.js";
+import User from "../../models/User.js";
 import AuthProviderInterface from "./authProviderInterface.js";
 
 export default class GoogleAuthProvider extends AuthProviderInterface {
@@ -24,25 +24,26 @@ export default class GoogleAuthProvider extends AuthProviderInterface {
       const payload = ticket.getPayload();
       const googleId = payload.sub;
       const email = payload.email;
-      const name = payload.name;
+      const displayName = payload.name;
+      const profileImageUrl = payload.picture;
 
-      let user = await AdminUser.findOne({ googleId });
+      let user = await User.findOne({ googleId });
 
       if (!user) {
-        user = await AdminUser.findOne({ email });
+        user = await User.findOne({ email });
 
         if (user) {
           user.googleId = googleId;
+          user.email = email;
+          user.displayName = displayName || user.displayName;
+          user.profileImageUrl = profileImageUrl || user.profileImageUrl;
           await user.save();
         } else {
-          const isFirstUser = (await AdminUser.countDocuments()) === 0;
-
-          user = new AdminUser({
-            name,
-            email,
-            password: Math.random().toString(36).slice(-10),
-            role: isFirstUser ? "admin" : "editor",
+          user = new User({
             googleId,
+            email,
+            displayName,
+            profileImageUrl,
           });
 
           await user.save();

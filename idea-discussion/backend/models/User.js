@@ -3,15 +3,27 @@ import mongoose from "mongoose";
 const UserSchema = new mongoose.Schema({
   userId: {
     type: String,
-    required: true,
     unique: true,
+    sparse: true,
+    index: true,
+  },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true,
+    index: true,
+  },
+  email: {
+    type: String,
+    unique: true,
+    sparse: true,
     index: true,
   },
   displayName: {
     type: String,
     default: null,
   },
-  profileImagePath: {
+  profileImageUrl: {
     type: String,
     default: null,
   },
