@@ -42,7 +42,6 @@ export async function handleUpdatePr(
         documentName,
         `${branchName}の変更`
       );
-    
     // findOrCreateDraftPr は description を新規作成時の body として使用する
     const prInfo = await findOrCreateDraftPr(
       octokit,
