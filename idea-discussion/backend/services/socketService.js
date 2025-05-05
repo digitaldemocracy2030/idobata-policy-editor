@@ -83,7 +83,7 @@ export function clearPendingSentences(threadId) {
   console.log(
     `[SocketService] Clearing pending sentences for thread:${threadId}`
   );
-  
+
   if (threadId) {
     io.to(`thread:${threadId}`).emit("chat-response-clear", {
       timestamp: new Date(),
@@ -98,29 +98,36 @@ export function clearPendingSentences(threadId) {
  * @param {Array<string>} sentences - The sentences to emit
  * @param {number} startIndex - The index to start from (default: 1, skipping the first sentence)
  */
-export async function streamChatResponse(themeId, threadId, sentences, startIndex = 1) {
+export async function streamChatResponse(
+  themeId,
+  threadId,
+  sentences,
+  startIndex = 1
+) {
   if (sentences.length <= startIndex) {
     return;
   }
-  
+
   const ChatThread = mongoose.model("ChatThread");
-  
+
   for (let i = startIndex; i < sentences.length; i++) {
     const thread = await ChatThread.findById(threadId);
     if (!thread || thread.pendingSentences.length === 0) {
-      console.log(`[SocketService] Stopping stream for thread:${threadId} - no pending sentences`);
+      console.log(
+        `[SocketService] Stopping stream for thread:${threadId} - no pending sentences`
+      );
       return;
     }
-    
+
     const sentence = sentences[i];
     const delay = sentence.length * 200; // Convert to milliseconds
-    
-    await new Promise(resolve => setTimeout(resolve, delay));
-    
+
+    await new Promise((resolve) => setTimeout(resolve, delay));
+
     emitChatResponseSentence(themeId, threadId, sentence);
-    
+
     await ChatThread.findByIdAndUpdate(threadId, {
-      $pop: { pendingSentences: -1 }
+      $pop: { pendingSentences: -1 },
     });
   }
 }
