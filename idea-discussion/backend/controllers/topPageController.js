@@ -1,4 +1,6 @@
 import ChatThread from "../models/ChatThread.js";
+import Problem from "../models/Problem.js";
+import Solution from "../models/Solution.js";
 import SharpQuestion from "../models/SharpQuestion.js";
 import Theme from "../models/Theme.js";
 
@@ -27,6 +29,14 @@ export const getTopPageData = async (req, res) => {
           themeId: theme._id,
         });
 
+        const problemCount = await Problem.countDocuments({
+          themeId: theme._id,
+        });
+
+        const solutionCount = await Solution.countDocuments({
+          themeId: theme._id,
+        });
+
         return {
           _id: theme._id,
           title: theme.title,
@@ -34,6 +44,8 @@ export const getTopPageData = async (req, res) => {
           slug: theme.slug,
           keyQuestionCount,
           commentCount,
+          problemCount,
+          solutionCount,
         };
       })
     );

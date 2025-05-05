@@ -116,8 +116,8 @@ const Top = () => {
             topPageData?.latestThemes.map((t) => ({
               id: t._id,
               title: t.title,
-              problemCount: t.keyQuestionCount || 0, // Using keyQuestionCount as problemCount
-              solutionCount: t.commentCount || 0, // Using commentCount as solutionCount
+              problemCount: t.problemCount || 0, // 正しい課題点の数を使用
+              solutionCount: t.solutionCount || 0, // 正しい解決策の数を使用
             })) || [],
         };
 

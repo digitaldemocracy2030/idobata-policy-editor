@@ -143,6 +143,8 @@ export interface Theme {
   slug: string;
   keyQuestionCount?: number;
   commentCount?: number;
+  problemCount?: number;
+  solutionCount?: number;
 }
 
 export type MessageType = "user" | "system" | "system-message";
