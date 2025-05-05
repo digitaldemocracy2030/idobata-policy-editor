@@ -26,7 +26,7 @@ const initializeMcpClient = async (serverPath: string): Promise<void> => {
 router.post("/", async (req, res) => {
   try {
     // Extract message, history, and the new context fields
-    const { message, history, branchId, fileContent, userName } = req.body;
+    const { message, history, branchId, fileContent, userName, currentPath } = req.body;
 
     if (!message || typeof message !== "string") {
       return res
@@ -67,7 +67,8 @@ router.post("/", async (req, res) => {
       history || [],
       branchId,
       fileContent,
-      userName
+      userName,
+      currentPath
     );
     return res.json({ response });
   } catch (error) {

@@ -297,6 +297,7 @@ const ChatPanel: React.FC = () => {
       branchId: currentBranchId, // Add branchId
       fileContent: fileContent, // Add decoded file content (or null)
       userName: userName, // Add user name
+      currentPath: currentPath, // Add current path
     };
 
     try {
