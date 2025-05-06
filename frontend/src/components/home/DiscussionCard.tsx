@@ -1,4 +1,9 @@
-import { ArrowRight, CheckCircle, ListFilter, ThumbsUp } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle,
+  MessageSquareWarning,
+  ThumbsUp,
+} from "lucide-react";
 import { Link } from "../../contexts/MockContext";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "../ui/card";
@@ -35,7 +40,7 @@ const DiscussionCard = ({
               気になる: {likeCount}
             </span>
             <span className="flex items-center mr-4">
-              <ListFilter className="h-4 w-4 mr-1 text-primary" />
+              <MessageSquareWarning className="h-4 w-4 mr-1 text-primary" />
               課題点: {problemCount}
             </span>
             <span className="flex items-center">
@@ -66,7 +71,7 @@ const DiscussionCard = ({
               気になる: {likeCount}
             </span>
             <span className="flex items-center mr-4">
-              <ListFilter className="h-4 w-4 mr-1 text-primary" />
+              <MessageSquareWarning className="h-4 w-4 mr-1 text-primary" />
               課題点: {problemCount}
             </span>
             <span className="flex items-center">
