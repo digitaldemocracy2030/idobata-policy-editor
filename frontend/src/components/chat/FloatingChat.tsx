@@ -1,9 +1,9 @@
-import { forwardRef, useImperativeHandle, useState, useEffect } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { type MessageType } from "../../types";
 import { ChatProvider, useChat } from "./ChatProvider";
+import { ChatRightBar } from "./ChatRightBar";
 import { ChatSheet } from "./ChatSheet";
 import { FloatingChatButton } from "./FloatingChatButton";
-import { ChatRightBar } from "./ChatRightBar";
 interface FloatingChatProps {
   onSendMessage?: (message: string) => void;
   onClose?: () => void;
