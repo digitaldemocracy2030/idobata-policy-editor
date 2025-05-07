@@ -1,9 +1,9 @@
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useImperativeHandle, useState, useEffect } from "react";
 import { type MessageType } from "../../types";
 import { ChatProvider, useChat } from "./ChatProvider";
 import { ChatSheet } from "./ChatSheet";
 import { FloatingChatButton } from "./FloatingChatButton";
-
+import { ChatRightBar } from "./ChatRightbar";
 interface FloatingChatProps {
   onSendMessage?: (message: string) => void;
   onClose?: () => void;
@@ -44,7 +44,33 @@ const FloatingChatInner = forwardRef<FloatingChatRef, FloatingChatProps>(
     const handleSendMessage = (message: string) => {
       onSendMessage?.(message);
     };
+    const [isXl, setIsXl] = useState(false);
+    useEffect(() => {
+      const mediaQueryList = window.matchMedia("(min-width: 1280px)");
 
+      const listener = (event) => {
+        if (event.matches) {
+          setIsXl(true);
+        } else {
+          setIsXl(false);
+        }
+      };
+
+      // リスナーを追加
+      mediaQueryList.addEventListener("change", listener);
+
+      // 初期状態を設定
+      if (mediaQueryList.matches) {
+        setIsXl(true);
+      } else {
+        setIsXl(false);
+      }
+
+      // クリーンアップ関数
+      return () => {
+        mediaQueryList.removeEventListener("change", listener);
+      };
+    }, []); // 空の依存配列で一度だけ実行
     useImperativeHandle(ref, () => ({
       addMessage: (content: string, type: MessageType) => {
         addMessage(content, type);
@@ -59,19 +85,28 @@ const FloatingChatInner = forwardRef<FloatingChatRef, FloatingChatProps>(
       endStreamingMessage,
       clearMessages,
     }));
-
-    return (
-      <>
-        {!isOpen && (
-          <FloatingChatButton onClick={handleOpen} hasUnread={hasUnread} />
-        )}
-        <ChatSheet
+    if (isXl === true) {
+      return (
+        <ChatRightBar
           isOpen={isOpen}
           onClose={handleClose}
           onSendMessage={handleSendMessage}
         />
-      </>
-    );
+      );
+    } else {
+      return (
+        <div>
+          {!isOpen && (
+            <FloatingChatButton onClick={handleOpen} hasUnread={hasUnread} />
+          )}
+          <ChatSheet
+            isOpen={isOpen}
+            onClose={handleClose}
+            onSendMessage={handleSendMessage}
+          />
+        </div>
+      );
+    }
   }
 );
 
