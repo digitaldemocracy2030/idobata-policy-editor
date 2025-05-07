@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import Footer from "./Footer";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import { useLocation } from "react-router-dom";
 
 interface PageLayoutProps {
   children: ReactNode;
