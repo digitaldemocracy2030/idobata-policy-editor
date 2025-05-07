@@ -49,7 +49,7 @@ app.use(
       ? process.env.IDEA_CORS_ORIGIN.split(",")
       : ["http://localhost:5173", "http://localhost:5175"],
     // Add other origins (e.g., production frontend URL) if needed
-  })
+  }),
 );
 
 // JSON Parser: Parse incoming JSON requests
@@ -90,7 +90,7 @@ app.use("/api/themes/:themeId/problems", themeProblemRoutes);
 app.use("/api/themes/:themeId/solutions", themeSolutionRoutes);
 app.use(
   "/api/themes/:themeId/generate-questions",
-  themeGenerateQuestionsRoutes
+  themeGenerateQuestionsRoutes,
 );
 app.use("/api/themes/:themeId/policy-drafts", themePolicyRoutes);
 app.use("/api/themes/:themeId/digest-drafts", themeDigestRoutes);
@@ -130,7 +130,7 @@ app.use((req, res, next) => {
   const match = req.path.match(userIdProfileImageRegex);
   if (match && req.method === "POST") {
     console.log(
-      `Redirecting request from ${req.path} to /api/users${req.path}`
+      `Redirecting request from ${req.path} to /api/users${req.path}`,
     );
     req.url = `/api/users${req.path}`;
     return next();
@@ -182,6 +182,31 @@ io.on("connection", (socket) => {
   socket.on("unsubscribe-thread", (threadId) => {
     console.log(`Socket ${socket.id} unsubscribing from thread: ${threadId}`);
     socket.leave(`thread:${threadId}`);
+  });
+
+  socket.on("clear-chat-queue", (threadId) => {
+    console.log(
+      `Socket ${socket.id} clearing chat queue for thread: ${threadId}`,
+    );
+    const ChatThread = mongoose.model("ChatThread");
+
+    ChatThread.findById(threadId)
+      .then((thread) => {
+        if (thread && thread.pendingSentences.length > 0) {
+          thread.pendingSentences = [];
+          return thread.save();
+        }
+        return Promise.resolve();
+      })
+      .then(() => {
+        console.log(`Cleared pending sentences for thread: ${threadId}`);
+      })
+      .catch((err) => {
+        console.error(
+          `Error clearing pending sentences for thread: ${threadId}`,
+          err,
+        );
+      });
   });
 
   socket.on("disconnect", () => {
