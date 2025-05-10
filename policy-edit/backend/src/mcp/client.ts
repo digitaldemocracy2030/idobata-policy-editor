@@ -162,6 +162,7 @@ export class McpClient {
    * @param branchId The current branch ID associated with the chat (optional)
    * @param fileContent The content of the currently viewed file (optional)
    * @param userName The name of the user initiating the request (optional)
+   * @param currentPath The path of the currently viewed file (optional)
    * @returns Response from the model
    */
   async processQuery(
@@ -169,7 +170,8 @@ export class McpClient {
     history: OpenAI.Chat.ChatCompletionMessageParam[] = [],
     branchId?: string,
     fileContent?: string,
-    userName?: string
+    userName?: string,
+    currentPath?: string
   ): Promise<string> {
     if (!this._initialized || !this.mcp) {
       return "Error: MCP client is not connected.";
@@ -196,10 +198,13 @@ export class McpClient {
       ...history,
     ];
 
-    // Construct and add context message if branchId or fileContent is available
+    // Construct and add context message if branchId, fileContent, or currentPath is available
     let contextContent = "";
     if (branchId) {
       contextContent += `Current Branch ID: ${branchId}\n`;
+    }
+    if (currentPath) {
+      contextContent += `Current File Path: ${currentPath}\n`;
     }
     if (fileContent) {
       // Truncate potentially long file content to avoid excessive token usage

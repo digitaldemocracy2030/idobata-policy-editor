@@ -2,6 +2,7 @@ import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import config from "../config.js";
 import { getAuthenticatedOctokit } from "../github/client.js";
+import { extractDocumentName, formatPrTitle } from "../github/prTitleUtils.js"; // 新しい関数をインポート
 import { findOrCreateDraftPr } from "../github/utils.js"; // findOrCreateDraftPr をインポート
 import logger from "../logger.js";
 
@@ -9,6 +10,8 @@ export const updatePrSchema = z.object({
   branchName: z.string().min(1),
   title: z.string().optional(), // タイトルをオプショナルで追加
   description: z.string(), // 空の説明も許可
+  filePath: z.string().optional(), // ファイルパスをオプショナルで追加
+  userName: z.string().optional(), // ユーザー名をオプショナルで追加
 });
 
 export type UpdatePrInput = z.infer<typeof updatePrSchema>;
@@ -16,7 +19,7 @@ export type UpdatePrInput = z.infer<typeof updatePrSchema>;
 export async function handleUpdatePr(
   params: UpdatePrInput
 ): Promise<CallToolResult> {
-  const { branchName, title, description } = params;
+  const { branchName, title, description, filePath, userName } = params;
   const owner = config.GITHUB_TARGET_OWNER;
   const repo = config.GITHUB_TARGET_REPO;
   // head format は utils 内で処理されるためここでは不要
@@ -31,7 +34,14 @@ export async function handleUpdatePr(
 
     // 1. PRを検索または作成
     // 新規作成時のデフォルトタイトル（title が指定されていない場合に使用）
-    const defaultPrTitle = `WIP: Changes for ${branchName}`;
+    const documentName = filePath ? extractDocumentName(filePath) : "";
+    const defaultPrTitle =
+      title ||
+      formatPrTitle(
+        userName || "匿名ユーザー",
+        documentName,
+        `${branchName}の変更`
+      );
     // findOrCreateDraftPr は description を新規作成時の body として使用する
     const prInfo = await findOrCreateDraftPr(
       octokit,
